@@ -1,25 +1,35 @@
-import React from 'react';
-import logo from './logo.svg';
+import React from 'react'
+// Components
+import Navbar from './components/Navbar'
+import MainRouter from './components/MainRouter'
+// Redux
+import { Provider } from 'react-redux';
+import store from './redux/store';
+// FireBase
+import * as firebase from 'firebase'
+import { ReactReduxFirebaseProvider } from 'react-redux-firebase'
+import { createFirestoreInstance } from 'redux-firestore'
+// Styles
 import './App.css';
+
+const rrfProps = {
+  firebase,
+  config: { 
+    userProfile: 'users',
+    useFirestoreForProfile: true,
+  },
+  dispatch: store.dispatch,
+  createFirestoreInstance
+}
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Provider store={store}>
+      <ReactReduxFirebaseProvider {...rrfProps}>
+        <Navbar />
+        <MainRouter />
+      </ReactReduxFirebaseProvider>
+    </Provider>
   );
 }
 
