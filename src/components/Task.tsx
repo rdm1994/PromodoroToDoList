@@ -12,7 +12,12 @@ import Typography from '@material-ui/core/Typography'
 import Avatar from '@material-ui/core/Avatar'
 import IconButton from '@material-ui/core/IconButton'
 import MoreVertIcon from '@material-ui/icons/MoreVert'
+import Menu from '@material-ui/core/Menu'
+import Slider from '@material-ui/core/Slider'
+import Tooltip from '@material-ui/core/Tooltip'
+import MenuItem from '@material-ui/core/MenuItem'
 import { red } from '@material-ui/core/colors'
+import PopperJs from 'popper.js'
 
 import { firestore } from 'firebase';
 import { deleteTask, setTaskTotalTime } from '../redux/actions/taskActions'
@@ -52,27 +57,31 @@ function Task({
     deleteTask,
     setTotalTime,
     taskId,
-}: { 
+}: {
     task: TaskType,
     userName: string,
-    deleteTask: any, 
-    setTotalTime: any, 
+    deleteTask: any,
+    setTotalTime: any,
     taskId: string
 }) {
     const [offset, setOffset] = useState(0);
     const [minutes, setMinutes] = useState(0);
     const [seconds, setSeconds] = useState(0);
     const [timeInterval, setTimeInterval] = useState();
+    const [duration, setDuration] = useState(20);
+
+    //MIU declarations
+    const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
     const classes = useStyles();
+    const open = Boolean(anchorEl);
     const radius = 86;
 
     function startTimer() {
-        const duration = 20;
         let timer = duration;
         if (minutes !== 0 || seconds !== 0) timer = minutes * 60 + seconds;
 
         let interval = (setInterval(() => {
-            let i = (radius*2*Math.PI) - (timer / duration) * (radius*2*Math.PI);
+            let i = (radius * 2 * Math.PI) - (timer / duration) * (radius * 2 * Math.PI);
             setOffset(i);
             setMinutes(Math.floor(timer / 60));
             setSeconds(Math.round(timer % 60));
@@ -100,6 +109,45 @@ function Task({
 
     function handleDelete() {
         deleteTask(taskId);
+        setAnchorEl(null);
+    }
+
+    function handleOnChangeDuration(e: any, value: any) {
+        setDuration(value);
+    }
+
+    //MUI function
+    function handleOnMenuClose() {
+        setAnchorEl(null);
+    }
+
+    function ValueLabelComponent(props: any) {
+        const { children, open, value } = props;
+
+        const popperRef = React.useRef<PopperJs | null>(null);
+        React.useEffect(() => {
+            if (popperRef.current) {
+                popperRef.current.update();
+            }
+        });
+
+        return (
+            <Tooltip
+                PopperProps={{
+                    popperRef,
+                }}
+                open={open}
+                enterTouchDelay={0}
+                placement="top"
+                title={value}
+            >
+                {children}
+            </Tooltip>
+        );
+    }
+
+    function handleOnMenuItemClick(event: React.MouseEvent<HTMLElement>) {
+        setAnchorEl(event.currentTarget);
     }
 
     return (
@@ -109,9 +157,43 @@ function Task({
                     <Avatar aria-label="recipe" className={classes.avatar}>R</Avatar>
                 }
                 action={
-                    <IconButton aria-label="settings">
-                        <MoreVertIcon />
-                    </IconButton>
+                    <div>
+                        <IconButton
+                            aria-label="settings"
+                            onClick={handleOnMenuItemClick}
+                        >
+                            <MoreVertIcon />
+                        </IconButton>
+                        <Menu
+                            id="long-menu"
+                            anchorEl={anchorEl}
+                            keepMounted
+                            open={open}
+                            onClose={handleOnMenuClose}
+                            PaperProps={{
+                                style: {
+                                    width: 350,
+                                },
+                            }}
+                        >
+                            <MenuItem onClick={handleDelete}>
+                                Delete Task
+                            </MenuItem>
+                            <div style={{padding: 16}}>
+                                <Typography
+                                    gutterBottom
+                                >Set timer</Typography>
+                                <Slider
+                                    ValueLabelComponent={ValueLabelComponent}
+                                    aria-label="custom thumb label"
+                                    defaultValue={20}
+                                    min={5}
+                                    max={30}
+                                    onChange={handleOnChangeDuration}
+                                />
+                            </div>
+                        </Menu>
+                    </div>
                 }
                 title={userName}
                 subheader={formatDate(task.timestamp)}
@@ -130,9 +212,9 @@ function Task({
                             fill="transparent"
                             r={radius}
                             cx="100"
-                            cy="100" 
-                            strokeDasharray={(radius*2*Math.PI) + ' ' + (radius*2*Math.PI)}
-                            strokeDashoffset={offset}/>
+                            cy="100"
+                            strokeDasharray={(radius * 2 * Math.PI) + ' ' + (radius * 2 * Math.PI)}
+                            strokeDashoffset={offset} />
                         <text
                             x="100"
                             y="100"
@@ -166,23 +248,20 @@ function Task({
                 <Button size="small" color="primary" onClick={clearTimer}>
                     Clear
                 </Button>
-                <Button size="small" color="primary" onClick={handleDelete}>
-                    delete
-                </Button>
             </CardActions>
         </Card>
     )
 }
 
 export default
-    connect(({ firestore: { data }, firebase: { auth }}: {firestore: any, firebase: any}, props: any) => ({
+    connect(({ firestore: { data }, firebase: { auth } }: { firestore: any, firebase: any }, props: any) => ({
         task: data.tasks && data.tasks[props.taskId],
         userName: auth.displayName,
     }), (dispatch: any) => {
         return {
             deleteTask: (taskId: string) => dispatch(deleteTask(taskId)),
-            setTotalTime: (taskId: string, timeToAdd: number) => { 
-                return dispatch(setTaskTotalTime(taskId, timeToAdd)); 
+            setTotalTime: (taskId: string, timeToAdd: number) => {
+                return dispatch(setTaskTotalTime(taskId, timeToAdd));
             }
         }
     })(Task);
