@@ -1,11 +1,11 @@
 //React
-import React from 'react'
+import React, { useState } from 'react'
 import { connect } from 'react-redux'
-import Task from './Task'
+import Task, { TaskType } from './Task'
 import CreateTask from './CreateTask';
 //Firebase
 import { compose } from 'redux'
-import { firestoreConnect } from 'react-redux-firebase'
+import { firestoreConnect, withFirebase } from 'react-redux-firebase'
 //MUI
 import clsx from 'clsx'
 import { makeStyles, useTheme, Theme, createStyles } from '@material-ui/core/styles'
@@ -24,8 +24,9 @@ import ListItem from '@material-ui/core/ListItem'
 import ListItemIcon from '@material-ui/core/ListItemIcon'
 import ListItemText from '@material-ui/core/ListItemText'
 import InboxIcon from '@material-ui/icons/MoveToInbox'
-import MailIcon from '@material-ui/icons/Mail'
 import UserIcon from '@material-ui/icons/AccountCircle'
+import Menu from '@material-ui/core/Menu'
+import MenuItem from '@material-ui/core/MenuItem'
 
 
 const drawerWidth = 240;
@@ -95,10 +96,14 @@ const useStyles = makeStyles((theme: Theme) =>
     }),
 );
 
-function MainBoard({ tasks, userName, userId }: { tasks: any, userName: string, userId: string }) {
+function MainBoard({ firebase, tasks, userName, userId }: { firebase: any, tasks: any, userName: string, userId: string }) {
+    const [dateFilter, setDateFilter] = useState<any>(null);
+
+    const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+    const [open, setOpen] = useState(true);
+    const openAnchor = Boolean(anchorEl);
     const classes = useStyles();
     const theme = useTheme();
-    const [open, setOpen] = React.useState(true);
 
     function handleDrawerOpen() {
         setOpen(true);
@@ -107,6 +112,40 @@ function MainBoard({ tasks, userName, userId }: { tasks: any, userName: string, 
     function handleDrawerClose() {
         setOpen(false);
     }
+
+    function handleOnMenuClose() {
+        setAnchorEl(null);
+    }
+
+    function handleOnCLickDateFilter(e: any) {
+        setDateFilter(new Date()); 
+    }
+    
+    function handleOnCLickNoDateFilter(e: any) {
+        setDateFilter(null); 
+    }
+
+    function handleMenuOnClick(event: React.MouseEvent<HTMLElement>) {
+        setAnchorEl(event.currentTarget);
+    }
+
+    function handleLogOut() {
+        setAnchorEl(null);
+        firebase.logout();
+    }
+
+    function filterTasks(task: TaskType) {
+        if (!dateFilter) return true;
+        const taskDate = task.timestamp.toDate();
+        if (taskDate.getFullYear() === dateFilter.getFullYear() &&
+            taskDate.getMonth() === dateFilter.getMonth() &&
+            taskDate.getDate() === dateFilter.getDate()
+        ){
+            return true;
+        }  
+        return false;
+    }
+
     return (
         <div className={classes.root}>
             <CssBaseline />
@@ -147,17 +186,34 @@ function MainBoard({ tasks, userName, userId }: { tasks: any, userName: string, 
                 </div>
                 <Divider />
                 <List>
-                    <ListItem button>
+                    <ListItem button onClick={handleMenuOnClick}>
                         <ListItemIcon><UserIcon /></ListItemIcon>
                         <ListItemText primary={userName} />
-
                     </ListItem>
-                    {['Today', 'Plans', 'Any Time'].map((text, index) => (
-                        <ListItem button key={text}>
-                            <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
-                            <ListItemText primary={text} />
-                        </ListItem>
-                    ))}
+                    <Menu
+                        id="long-menu"
+                        anchorEl={anchorEl}
+                        keepMounted
+                        open={openAnchor}
+                        onClose={handleOnMenuClose}
+                        PaperProps={{
+                            style: {
+                                width: 200,
+                            },
+                        }}
+                    >
+                        <MenuItem onClick={handleLogOut}>
+                            LOG OUT
+                        </MenuItem>
+                    </Menu>
+                    <ListItem id="Today" button onClick={handleOnCLickDateFilter} key={"Today"}>
+                        <ListItemIcon><InboxIcon /></ListItemIcon>
+                        <ListItemText primary={"Today"} />
+                    </ListItem>
+                    <ListItem id="Any time" button onClick={handleOnCLickNoDateFilter} key={"Any time"}>
+                        <ListItemIcon><InboxIcon /></ListItemIcon>
+                        <ListItemText primary={"Any time"} />
+                    </ListItem>
                 </List>
             </Drawer>
             <main
@@ -167,13 +223,13 @@ function MainBoard({ tasks, userName, userId }: { tasks: any, userName: string, 
             >
                 <div className={classes.drawerHeader} />
                 {
-                    (tasks) ? tasks.map((task: any, index: number) => (
-                        <Task taskId={task.id} key={task.id}/>            
+                    (tasks) ? tasks.filter(filterTasks).map((task: any, index: number) => (
+                        <Task taskId={task.id} key={task.id} />
                     )) : (
-                        <Typography paragraph>Loading...</Typography>
-                    )
+                            <Typography paragraph>Loading...</Typography>
+                        )
                 }
-                <CreateTask/>
+                <CreateTask />
             </main>
         </div>
     );
@@ -192,7 +248,8 @@ export default compose(
         console.log(userId);
         if (!userId) return [];
         return [{
-        collection: 'tasks',
-        where: ['userId', '==', userId]
-    }]}),
+            collection: 'tasks',
+            where: ['userId', '==', userId]
+        }]
+    }),
 )(MainBoard)

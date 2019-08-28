@@ -12,9 +12,9 @@ import Typography from '@material-ui/core/Typography'
 import Avatar from '@material-ui/core/Avatar'
 import IconButton from '@material-ui/core/IconButton'
 import MoreVertIcon from '@material-ui/icons/MoreVert'
-import Menu from '@material-ui/core/Menu'
 import Slider from '@material-ui/core/Slider'
 import Tooltip from '@material-ui/core/Tooltip'
+import Menu from '@material-ui/core/Menu'
 import MenuItem from '@material-ui/core/MenuItem'
 import { red } from '@material-ui/core/colors'
 import PopperJs from 'popper.js'
@@ -54,12 +54,14 @@ const formatDate = (timeStamp: firestore.Timestamp) => {
 function Task({
     task,
     userName,
+    userPhoto,
     deleteTask,
     setTotalTime,
     taskId,
 }: {
     task: TaskType,
     userName: string,
+    userPhoto: string,
     deleteTask: any,
     setTotalTime: any,
     taskId: string
@@ -117,7 +119,7 @@ function Task({
     }
 
     //MUI function
-    function handleOnMenuClose() {
+    function handleMenuOnClose() {
         setAnchorEl(null);
     }
 
@@ -146,7 +148,7 @@ function Task({
         );
     }
 
-    function handleOnMenuItemClick(event: React.MouseEvent<HTMLElement>) {
+    function handleMenuOnClick(event: React.MouseEvent<HTMLElement>) {
         setAnchorEl(event.currentTarget);
     }
 
@@ -154,13 +156,19 @@ function Task({
         <Card className={classes.card} key={taskId}>
             <CardHeader
                 avatar={
-                    <Avatar aria-label="recipe" className={classes.avatar}>R</Avatar>
+                    <Avatar 
+                        aria-label="user" 
+                        className={classes.avatar}
+                        src={userPhoto}
+                    >
+                        U
+                    </Avatar>
                 }
                 action={
                     <div>
                         <IconButton
                             aria-label="settings"
-                            onClick={handleOnMenuItemClick}
+                            onClick={handleMenuOnClick}
                         >
                             <MoreVertIcon />
                         </IconButton>
@@ -169,10 +177,10 @@ function Task({
                             anchorEl={anchorEl}
                             keepMounted
                             open={open}
-                            onClose={handleOnMenuClose}
+                            onClose={handleMenuOnClose}
                             PaperProps={{
                                 style: {
-                                    width: 350,
+                                    width: 300,
                                 },
                             }}
                         >
@@ -257,6 +265,7 @@ export default
     connect(({ firestore: { data }, firebase: { auth } }: { firestore: any, firebase: any }, props: any) => ({
         task: data.tasks && data.tasks[props.taskId],
         userName: auth.displayName,
+        userPhoto: auth.photoURL,
     }), (dispatch: any) => {
         return {
             deleteTask: (taskId: string) => dispatch(deleteTask(taskId)),
@@ -265,11 +274,6 @@ export default
             }
         }
     })(Task);
-
-interface OwnProps {
-    taskId: string,
-    key: number
-}
 
 export interface TaskType {
     taskName: string,

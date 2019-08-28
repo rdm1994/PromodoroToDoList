@@ -51,22 +51,24 @@ function Login({ firebase, auth, history }) {
     const [password, setPassword] = useState('');
 
     function loginWithGoogle() {
-        firebase.login({ provider: 'google', type: 'popup' })
-        history.push('/');
+        firebase.login({ provider: 'google', type: 'popup' }).then(() => {
+            history.push('/');
+        });
     }
 
-    function handleClick(e) {
+    function handleOnClick(e) {
         e.preventDefault();
         if (email && password) {
             firebase.login({
                 email,
                 password
+            }).then(() => {
+                history.push('/');
             })
-            console.log('ok' + auth)
             return;
         }
         isEmpty(auth) ? loginWithGoogle() : firebase.logout()
-        console.log('GOOGLEok' + auth)
+        console.log('ok!')
     }
     function handleChange(e) {
         switch (e.target.name) {
@@ -129,7 +131,7 @@ function Login({ firebase, auth, history }) {
                         color="primary"
                         className={classes.submit}
                         disabled={!isLoaded(auth)}
-                        onClick={handleClick}
+                        onClick={handleOnClick}
                     >
                         {isEmpty(auth) ? 'Sign In' : 'Log out'}
                     </Button>
@@ -140,7 +142,7 @@ function Login({ firebase, auth, history }) {
                         color="secondary"
                         className={classes.submit}
                         disabled={!isLoaded(auth)}
-                        onClick={handleClick}
+                        onClick={handleOnClick}
                     >
                         LogIn with Google
                         </Button>
@@ -151,7 +153,7 @@ function Login({ firebase, auth, history }) {
                                 </Link>
                         </Grid>
                         <Grid item>
-                            <Link href="#" variant="body2">
+                            <Link href="/signup" variant="body2">
                                 {"Don't have an account? Sign Up"}
                             </Link>
                         </Grid>
