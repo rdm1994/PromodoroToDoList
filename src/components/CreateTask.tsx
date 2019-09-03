@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { connect } from 'react-redux'
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
 
@@ -8,6 +8,7 @@ import CardActions from '@material-ui/core/CardActions';
 import Button from '@material-ui/core/Button'
 import { red } from '@material-ui/core/colors';
 import TextField from '@material-ui/core/TextField';
+import FormHelperText from '@material-ui/core/FormHelperText';
 
 import { createTask as createTaskAction } from '../redux/actions/taskActions';
 
@@ -16,8 +17,7 @@ import { createTask as createTaskAction } from '../redux/actions/taskActions';
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
         card: {
-            mixWidth: 345,
-            maxWidth: 330,
+            width: 310,
             maxHeight: 230,
             margin: theme.spacing(3),
         },
@@ -38,19 +38,32 @@ const useStyles = makeStyles((theme: Theme) =>
         avatar: {
             backgroundColor: red[500],
         },
+        textField: {
+            marginTop: 18,
+        }
     }),
 );
 
 function CreateTask({ createTask }: { createTask: any }) {
-    const [task, setTask] = useState({taskName:'', description:''});
+    const [task, setTask] = useState({ taskName: '', description: '' });
+    const [error, setError] = useState({ taskName: '', description: '' });
 
     const classes = useStyles();
 
     function handleCreateTask(e: any) {
         e.preventDefault();
-        if (!task) return;
+        if(error.taskName || error.description) return;
+        if (!task.taskName || !task.description) {
+            setError({
+                ...error,
+                taskName: (!task.taskName) ? 'Enter name! ' : '',
+                description: (!task.description) ? 'Enter description! ' : '',
+            });
+            return;
+        }
+        
         createTask(task);
-        setTask({taskName: '', description: ''});
+        setTask({ taskName: '', description: '' });
     }
 
     function handleOnChange(e: any) {
@@ -58,9 +71,15 @@ function CreateTask({ createTask }: { createTask: any }) {
         switch (e.target.name) {
             case 'taskName':
                 setTask({ ...task, taskName: e.target.value });
+                if (e.target.value == '') setError({ ...error, taskName: 'Enter name! ' });
+                else if(e.target.value.length > 20) setError({ ...error, taskName: 'Name should be less than 20 symbols! ' });
+                else setError({ ...error, taskName: '' });
                 break;
             case 'description':
                 setTask({ ...task, description: e.target.value });
+                if (e.target.value == '') setError({ ...error, description: 'Enter description! ' });
+                else if(e.target.value.length > 50) setError({ ...error, description: 'Name should be less than 50 symbols! ' });
+                else setError({ ...error, description: '' });
                 break;
             default:
                 return;
@@ -68,7 +87,7 @@ function CreateTask({ createTask }: { createTask: any }) {
     }
 
     function cancel() {
-        setTask({taskName: '', description: ''});
+        setTask({ taskName: '', description: '' });
     }
 
     return (
@@ -78,16 +97,33 @@ function CreateTask({ createTask }: { createTask: any }) {
                     id="taskName"
                     name="taskName"
                     label="Task Name"
+                    required={true}
+                    error={Boolean(error.taskName)}
                     value={task.taskName}
                     onChange={handleOnChange}
                 ></TextField>
+                {error.taskName && (
+                    <FormHelperText id="component-error-text">
+                        {error.taskName}
+                    </FormHelperText>
+                )}
                 <TextField
+                    className={classes.textField}
                     id="description"
                     name="description"
                     label="Description"
+                    required={true}
+                    multiline
+                    rows={2}
+                    error={Boolean(error.description)}
                     value={task.description}
                     onChange={handleOnChange}
                 ></TextField>
+                {error.description && (
+                    <FormHelperText id="component-error-text">
+                        {error.description}
+                    </FormHelperText>
+                )}
             </CardContent>
             <CardActions>
                 <Button size="small" color="primary" onClick={handleCreateTask}>
