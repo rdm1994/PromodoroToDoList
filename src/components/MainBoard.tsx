@@ -5,7 +5,7 @@ import Task, { TaskType } from './Task'
 import CreateTask from './CreateTask';
 //Firebase
 import { compose } from 'redux'
-import { firestoreConnect, withFirebase } from 'react-redux-firebase'
+import { firestoreConnect } from 'react-redux-firebase'
 //MUI
 import clsx from 'clsx'
 import { makeStyles, useTheme, Theme, createStyles } from '@material-ui/core/styles'
@@ -101,6 +101,7 @@ function MainBoard({ firebase, tasks, userName, userId }: { firebase: any, tasks
 
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
     const [open, setOpen] = useState(true);
+    const [selectedMenu, setSelectedMenu] = useState('');
     const openAnchor = Boolean(anchorEl);
     const classes = useStyles();
     const theme = useTheme();
@@ -117,12 +118,19 @@ function MainBoard({ firebase, tasks, userName, userId }: { firebase: any, tasks
         setAnchorEl(null);
     }
 
-    function handleOnCLickDateFilter(e: any) {
+    function handleOnCLickDateFilter() {
         setDateFilter(new Date()); 
+        setSelectedMenu('Today');
+    }
+
+    function handleOnCLickDateFilterYesterday() {
+        setDateFilter(new Date(Date.now() - 86400000));
+        setSelectedMenu('Yesterday');
     }
     
-    function handleOnCLickNoDateFilter(e: any) {
-        setDateFilter(null); 
+    function handleOnCLickNoDateFilter() {
+        setDateFilter(null);
+        setSelectedMenu('');
     }
 
     function handleMenuOnClick(event: React.MouseEvent<HTMLElement>) {
@@ -203,17 +211,31 @@ function MainBoard({ firebase, tasks, userName, userId }: { firebase: any, tasks
                         }}
                     >
                         <MenuItem onClick={handleLogOut}>
-                            LOG OUT
+                            Log Out
                         </MenuItem>
                     </Menu>
-                    <ListItem id="Today" button onClick={handleOnCLickDateFilter} key={"Today"}>
+                    <MenuItem 
+                        button 
+                        onClick={handleOnCLickDateFilter} 
+                        key={"Today"} 
+                        selected={selectedMenu==='Today'}
+                    >
                         <ListItemIcon><InboxIcon /></ListItemIcon>
                         <ListItemText primary={"Today"} />
-                    </ListItem>
-                    <ListItem id="Any time" button onClick={handleOnCLickNoDateFilter} key={"Any time"}>
+                    </MenuItem>
+                    <MenuItem 
+                        button 
+                        onClick={handleOnCLickDateFilterYesterday} 
+                        key={"Yesterday"}
+                        selected={selectedMenu==='Yesterday'}
+                    >
+                        <ListItemIcon><InboxIcon/></ListItemIcon>
+                        <ListItemText primary={"Yesterday"} />
+                    </MenuItem>
+                    <MenuItem id="Any time" button onClick={handleOnCLickNoDateFilter} key={"Any time"}>
                         <ListItemIcon><InboxIcon /></ListItemIcon>
                         <ListItemText primary={"Any time"} />
-                    </ListItem>
+                    </MenuItem>
                 </List>
             </Drawer>
             <main
@@ -223,7 +245,9 @@ function MainBoard({ firebase, tasks, userName, userId }: { firebase: any, tasks
             >
                 <div className={classes.drawerHeader} />
                 {
-                    (tasks) ? tasks.filter(filterTasks).map((task: any, index: number) => (
+                    (tasks) ? tasks.filter(filterTasks).sort((a: TaskType, b: TaskType) => {
+                        return a.timestamp.toDate().getTime() - b.timestamp.toDate().getTime();
+                    }).map((task: any, index: number) => (
                         <Task taskId={task.id} key={task.id} />
                     )) : (
                             <Typography paragraph>Loading...</Typography>
@@ -245,7 +269,6 @@ export default compose(
         }
     }),
     firestoreConnect(({ userId }: any) => {
-        console.log(userId);
         if (!userId) return [];
         return [{
             collection: 'tasks',
