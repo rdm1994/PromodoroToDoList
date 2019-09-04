@@ -18,9 +18,8 @@ import Menu from '@material-ui/core/Menu'
 import MenuItem from '@material-ui/core/MenuItem'
 import { red } from '@material-ui/core/colors'
 import PopperJs from 'popper.js'
-
 import { firestore } from 'firebase';
-import { deleteTask, setTaskTotalTime } from '../redux/actions/taskActions'
+import { deleteTask, setTaskTotalTime, setTaskDone } from '../redux/actions/taskActions'
 
 const useStyles = makeStyles(theme =>
     createStyles({
@@ -57,6 +56,7 @@ function Task({
     userPhoto,
     deleteTask,
     setTotalTime,
+    setTaskDone,
     taskId,
 }: {
     task: TaskType,
@@ -64,6 +64,7 @@ function Task({
     userPhoto: string,
     deleteTask: any,
     setTotalTime: any,
+    setTaskDone: any,
     taskId: string
 }) {
     const [offset, setOffset] = useState(0);
@@ -78,9 +79,17 @@ function Task({
     const open = Boolean(anchorEl);
     const radius = 86;
 
+    function togleTimer() {
+        if (!timeInterval) startTimer()
+        else stopTimer();
+    }
+
     function startTimer() {
         let timer = duration;
         if (minutes !== 0 || seconds !== 0) timer = minutes * 60 + seconds;
+
+        setMinutes(Math.floor(timer / 60));
+        setSeconds(Math.round(timer % 60));
 
         let interval = (setInterval(() => {
             let i = (radius * 2 * Math.PI) - (timer / duration) * (radius * 2 * Math.PI);
@@ -100,10 +109,12 @@ function Task({
     function stopTimer() {
         console.log(timeInterval);
         clearInterval(timeInterval);
+        setTimeInterval(null);
     }
 
     function clearTimer() {
         clearInterval(timeInterval);
+        setTimeInterval(null);
         setMinutes(0);
         setSeconds(0);
         setOffset(0);
@@ -156,8 +167,8 @@ function Task({
         <Card className={classes.card} key={taskId}>
             <CardHeader
                 avatar={
-                    <Avatar 
-                        aria-label="user" 
+                    <Avatar
+                        aria-label="user"
                         className={classes.avatar}
                         src={userPhoto}
                     >
@@ -184,10 +195,13 @@ function Task({
                                 },
                             }}
                         >
+                            <MenuItem onClick={setTaskDone(taskId, true)}>
+                                Mark as done
+                            </MenuItem>
                             <MenuItem onClick={handleDelete}>
                                 Delete Task
                             </MenuItem>
-                            <div style={{padding: 16}}>
+                            <div style={{ padding: 16 }}>
                                 <Typography
                                     gutterBottom
                                 >Set timer</Typography>
@@ -206,7 +220,7 @@ function Task({
                 title={userName}
                 subheader={formatDate(task.timestamp)}
             />
-            <CardActionArea>
+            <CardActionArea onClick={togleTimer}>
 
                 <svg
                     className={classes.progressRing}
@@ -215,7 +229,7 @@ function Task({
                     <g>
                         <circle
                             className={classes.progressRingCircle}
-                            stroke="red"
+                            stroke="blue"
                             strokeWidth="4"
                             fill="transparent"
                             r={radius}
@@ -230,28 +244,25 @@ function Task({
                             fontFamily="Verdana"
                             fontSize="15"
                             fill="black">
-                            {minutes < 10 ? "0" + minutes : minutes}:{seconds < 10 ? "0" + seconds : seconds}
+                            {(minutes < 10) ? "0" + minutes : minutes}:{(seconds < 10) ? "0" + seconds : seconds}
                         </text>
                     </g>
                 </svg>
-                <CardContent>
-                    <Typography gutterBottom variant="h5" component="h2">
-                        {task.taskName}
-                    </Typography>
-                    <Typography component="p">
-                        Total time: {task.totalTime}
-                    </Typography>
-                    <Typography variant="body2" color="textSecondary" component="p">
-                        {task.description}
-                    </Typography>
-                </CardContent>
             </CardActionArea>
+            <CardContent>
+                <Typography gutterBottom variant="h5" component="h2">
+                    {task.taskName}
+                </Typography>
+                <Typography component="p">
+                    Total time: {task.totalTime}
+                </Typography>
+                <Typography variant="body2" color="textSecondary" component="p">
+                    {task.description} {task.done}
+                </Typography>
+            </CardContent>
             <CardActions>
-                <Button size="small" color="primary" onClick={startTimer}>
-                    Start
-                </Button>
-                <Button size="small" color="primary" onClick={stopTimer}>
-                    Stop
+                <Button size="small" color="primary" onClick={togleTimer}>
+                    { (!timeInterval)? 'Start' : 'Stop'}
                 </Button>
                 <Button size="small" color="primary" onClick={clearTimer}>
                     Clear
@@ -271,6 +282,9 @@ export default
             deleteTask: (taskId: string) => dispatch(deleteTask(taskId)),
             setTotalTime: (taskId: string, timeToAdd: number) => {
                 return dispatch(setTaskTotalTime(taskId, timeToAdd));
+            },
+            setTaskDone: (taskId: string, done: boolean) => {
+                return dispatch(setTaskDone(taskId, done));
             }
         }
     })(Task);
@@ -280,5 +294,6 @@ export interface TaskType {
     description: string,
     timestamp: firestore.Timestamp,
     totalTime: number,
-    userId: string
+    userId: string,
+    done: boolean,
 }

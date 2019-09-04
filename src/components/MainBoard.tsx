@@ -246,7 +246,7 @@ function MainBoard({ firebase, tasks, userName, userId }: { firebase: any, tasks
                 <div className={classes.drawerHeader} />
                 {
                     (tasks) ? tasks.filter(filterTasks).sort((a: TaskType, b: TaskType) => {
-                        return a.timestamp.toDate().getTime() - b.timestamp.toDate().getTime();
+                        return b.timestamp.toDate().getTime() - a.timestamp.toDate().getTime();
                     }).map((task: any, index: number) => (
                         <Task taskId={task.id} key={task.id} />
                     )) : (

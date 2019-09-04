@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { connect } from 'react-redux'
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
 
@@ -71,13 +71,13 @@ function CreateTask({ createTask }: { createTask: any }) {
         switch (e.target.name) {
             case 'taskName':
                 setTask({ ...task, taskName: e.target.value });
-                if (e.target.value == '') setError({ ...error, taskName: 'Enter name! ' });
+                if (e.target.value === '') setError({ ...error, taskName: 'Enter name! ' });
                 else if(e.target.value.length > 20) setError({ ...error, taskName: 'Name should be less than 20 symbols! ' });
                 else setError({ ...error, taskName: '' });
                 break;
             case 'description':
                 setTask({ ...task, description: e.target.value });
-                if (e.target.value == '') setError({ ...error, description: 'Enter description! ' });
+                if (e.target.value === '') setError({ ...error, description: 'Enter description! ' });
                 else if(e.target.value.length > 50) setError({ ...error, description: 'Name should be less than 50 symbols! ' });
                 else setError({ ...error, description: '' });
                 break;

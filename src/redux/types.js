@@ -6,5 +6,7 @@ export const DELETE_TASK = 'DELETE_TASK';
 export const DELETE_TASK_ERROR = 'DELETE_TASK_ERROR';
 export const SET_TASK_TIME = 'SET_TASK_TIME';
 export const SET_TASK_TIME_ERROR = 'SET_TASK_TIME_ERROR';
+export const SET_TASK_DONE = 'SET_TASK_DONE';
+export const SET_TASK_DONE_ERROR = 'SET_TASK_DONE_ERROR';
 export const SET_USER = 'SET_USER';
 export const LOADING_USER = 'LOADING_USER';
