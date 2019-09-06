@@ -85,6 +85,7 @@ function Task({
     }
 
     function startTimer() {
+        if(task.done) return;
         let timer = duration;
         if (minutes !== 0 || seconds !== 0) timer = minutes * 60 + seconds;
 
@@ -127,6 +128,11 @@ function Task({
 
     function handleOnChangeDuration(e: any, value: any) {
         setDuration(value);
+    }
+
+    function handleSetTaskDone() {
+        setTaskDone(taskId, !task.done);
+        setAnchorEl(null);
     }
 
     //MUI function
@@ -195,8 +201,8 @@ function Task({
                                 },
                             }}
                         >
-                            <MenuItem onClick={setTaskDone(taskId, true)}>
-                                Mark as done
+                            <MenuItem onClick={handleSetTaskDone}>
+                                Mark as {(task.done) ? 'undone' : 'done'}
                             </MenuItem>
                             <MenuItem onClick={handleDelete}>
                                 Delete Task
@@ -229,7 +235,7 @@ function Task({
                     <g>
                         <circle
                             className={classes.progressRingCircle}
-                            stroke="blue"
+                            stroke={(task.done) ? 'grey' : 'rgb(0,0,255)'}
                             strokeWidth="4"
                             fill="transparent"
                             r={radius}
@@ -250,21 +256,31 @@ function Task({
                 </svg>
             </CardActionArea>
             <CardContent>
-                <Typography gutterBottom variant="h5" component="h2">
+                <Typography gutterBottom variant="h5" component="h2" 
+                    color={(task.done)? 'textSecondary' : 'textPrimary'}
+                >
                     {task.taskName}
                 </Typography>
-                <Typography component="p">
+                <Typography component="p" 
+                    color={(task.done)? 'textSecondary' : 'primary'}
+                >
                     Total time: {task.totalTime}
                 </Typography>
                 <Typography variant="body2" color="textSecondary" component="p">
-                    {task.description} {task.done}
+                    {task.description} 
                 </Typography>
             </CardContent>
             <CardActions>
-                <Button size="small" color="primary" onClick={togleTimer}>
+                <Button size="small" color="primary" 
+                    onClick={togleTimer}
+                    disabled={task.done}
+                >
                     { (!timeInterval)? 'Start' : 'Stop'}
                 </Button>
-                <Button size="small" color="primary" onClick={clearTimer}>
+                <Button size="small" color="primary" 
+                    onClick={clearTimer}
+                    disabled={task.done}
+                >
                     Clear
                 </Button>
             </CardActions>

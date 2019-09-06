@@ -1,0 +1,154 @@
+import React, { useState, useEffect } from 'react'
+import { connect } from 'react-redux'
+import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
+
+import Card from '@material-ui/core/Card';
+import CardContent from '@material-ui/core/CardContent';
+import CardActions from '@material-ui/core/CardActions';
+import Button from '@material-ui/core/Button'
+import { red } from '@material-ui/core/colors';
+import TextField from '@material-ui/core/TextField';
+import FormHelperText from '@material-ui/core/FormHelperText';
+
+import { createTask as createTaskAction } from '../redux/actions/taskActions';
+
+
+
+const useStyles = makeStyles((theme: Theme) =>
+    createStyles({
+        card: {
+            width: 310,
+            maxHeight: 230,
+            margin: theme.spacing(3),
+        },
+        media: {
+            height: 0,
+            paddingTop: '56.25%', // 16:9
+        },
+        expand: {
+            transform: 'rotate(0deg)',
+            marginLeft: 'auto',
+            transition: theme.transitions.create('transform', {
+                duration: theme.transitions.duration.shortest,
+            }),
+        },
+        expandOpen: {
+            transform: 'rotate(180deg)',
+        },
+        avatar: {
+            backgroundColor: red[500],
+        },
+        textField: {
+            marginTop: 18,
+        }
+    }),
+);
+
+function CreateTask({ createTask }: { createTask: any }) {
+    const [task, setTask] = useState({ taskName: '', description: '' });
+    const [error, setError] = useState({ taskName: '', description: '' });
+
+    const classes = useStyles();
+
+    function handleCreateTask(e: any) {
+        e.preventDefault();
+        if(error.taskName || error.description) return;
+        if (!task.taskName || !task.description) {
+            setError({
+                ...error,
+                taskName: (!task.taskName) ? 'Enter name! ' : '',
+                description: (!task.description) ? 'Enter description! ' : '',
+            });
+            return;
+        }
+        
+        createTask(task);
+        setTask({ taskName: '', description: '' });
+    }
+
+    function handleOnChange(e: any) {
+        e.preventDefault();
+        switch (e.target.name) {
+            case 'taskName':
+                setTask({ ...task, taskName: e.target.value });
+<<<<<<< HEAD
+                if (e.target.value === '') setError({ ...error, taskName: 'Enter name! ' });
+=======
+                if (e.target.value == '') setError({ ...error, taskName: 'Enter name! ' });
+>>>>>>> 5692d40cdc5f3661b75a559d5b79eb8167890f5f
+                else if(e.target.value.length > 20) setError({ ...error, taskName: 'Name should be less than 20 symbols! ' });
+                else setError({ ...error, taskName: '' });
+                break;
+            case 'description':
+                setTask({ ...task, description: e.target.value });
+<<<<<<< HEAD
+                if (e.target.value === '') setError({ ...error, description: 'Enter description! ' });
+=======
+                if (e.target.value == '') setError({ ...error, description: 'Enter description! ' });
+>>>>>>> 5692d40cdc5f3661b75a559d5b79eb8167890f5f
+                else if(e.target.value.length > 50) setError({ ...error, description: 'Name should be less than 50 symbols! ' });
+                else setError({ ...error, description: '' });
+                break;
+            default:
+                return;
+        }
+    }
+
+    function cancel() {
+        setTask({ taskName: '', description: '' });
+    }
+
+    return (
+        <Card className={classes.card}>
+            <CardContent>
+                <TextField
+                    id="taskName"
+                    name="taskName"
+                    label="Task Name"
+                    required={true}
+                    error={Boolean(error.taskName)}
+                    value={task.taskName}
+                    onChange={handleOnChange}
+                ></TextField>
+                {error.taskName && (
+                    <FormHelperText id="component-error-text">
+                        {error.taskName}
+                    </FormHelperText>
+                )}
+                <TextField
+                    className={classes.textField}
+                    id="description"
+                    name="description"
+                    label="Description"
+                    required={true}
+                    multiline
+                    rows={2}
+                    error={Boolean(error.description)}
+                    value={task.description}
+                    onChange={handleOnChange}
+                ></TextField>
+                {error.description && (
+                    <FormHelperText id="component-error-text">
+                        {error.description}
+                    </FormHelperText>
+                )}
+            </CardContent>
+            <CardActions>
+                <Button size="small" color="primary" onClick={handleCreateTask}>
+                    Create
+                </Button>
+                <Button size="small" color="secondary" onClick={cancel}>
+                    Cancel
+                </Button>
+            </CardActions>
+        </Card>
+    );
+}
+
+function mapActionsToProps(dispatch: any) {
+    return {
+        createTask: (task: any) => dispatch(createTaskAction(task))
+    }
+}
+
+export default connect(null, mapActionsToProps)(CreateTask)
