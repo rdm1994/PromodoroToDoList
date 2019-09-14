@@ -44,7 +44,7 @@ const useStyles = makeStyles((theme: Theme) =>
     }),
 );
 
-function CreateTask({ createTask }: { createTask: any }) {
+export function CreateTask({ createTask }: { createTask: any }) {
     const [task, setTask] = useState({ taskName: '', description: '' });
     const [error, setError] = useState({ taskName: '', description: '' });
 

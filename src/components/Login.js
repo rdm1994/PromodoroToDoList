@@ -46,10 +46,11 @@ const useStyles = makeStyles(theme => ({
 
 // Login Component
 function Login({ firebase, auth, history }) {
-    console.log(auth);
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
+    console.log(auth);
+    if(auth.uid) history.push('/');
     function loginWithGoogle() {
         firebase.login({ provider: 'google', type: 'popup' }).then(() => {
             history.push('/');
@@ -58,11 +59,13 @@ function Login({ firebase, auth, history }) {
 
     function handleOnClick(e) {
         e.preventDefault();
+        if(!isEmpty(auth)) { firebase.logout(); return; }
         if (email && password) {
             firebase.login({
                 email,
                 password
             }).then(() => {
+                console.log('go main')
                 history.push('/');
             })
             return;
