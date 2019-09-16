@@ -1,6 +1,6 @@
 import React from 'react';
 import { CreateTask } from './CreateTask'
-import { createShallow } from '@material-ui/core/test-utils';
+import { createShallow, createMount } from '@material-ui/core/test-utils';
 
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
@@ -12,6 +12,9 @@ import TextField from '@material-ui/core/TextField';
 describe('<CreateTask> componenet', () => {
     let component;
     let createTask = jest.fn();
+    const setState = jest.fn();
+    const useStateSpy = jest.spyOn(React, 'useState')
+    useStateSpy.mockImplementation((init) => [init, setState]);
     beforeEach(() => {
         let shallow = createShallow();
         component = shallow(<CreateTask createTask={createTask} />);
@@ -41,12 +44,31 @@ describe('<CreateTask> componenet', () => {
         expect(component.find(Button).length).toBe(2);
     });
 
-    /*it(' Create Button should trigger createTask ', () => {
-        const mockedHandleCreateTask = jest.spyOn(CreateTask, 'handleCreateTask');
+    it('Create Button should trigger createTask ', () => {
         component.find(Button).at(0).simulate("click", {
             preventDefault: () => {
             }
         });
-        expect(mockedHandleCreateTask).toBeCalled();
-    });*/
+        expect(setState).toBeCalled();
+    });
+    it('OnChange name input triggers setState', () => {
+        component.find(TextField).at(0).simulate('change', {
+            target: {
+                value: 'Test',
+            },
+            preventDefault: () => {
+            },
+        });
+        expect(setState).toBeCalledTimes(1);
+    });
+    it('OnChange description input triggers setState', () => {
+        component.find(TextField).at(1).simulate('change', {
+            target: {
+                value: 'Test',
+            },
+            preventDefault: () => {
+            },
+        });
+        expect(setState).toBeCalledTimes(1);
+    });
 });

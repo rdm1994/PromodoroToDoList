@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { connect } from 'react-redux'
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
 
@@ -45,8 +45,8 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 export function CreateTask({ createTask }: { createTask: any }) {
-    const [task, setTask] = useState({ taskName: '', description: '' });
-    const [error, setError] = useState({ taskName: '', description: '' });
+    const [task, setTask] = React.useState({ taskName: '', description: '' });
+    const [error, setError] = React.useState({ taskName: '', description: '' });
 
     const classes = useStyles();
 
