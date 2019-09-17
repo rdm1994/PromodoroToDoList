@@ -43,7 +43,7 @@ const useStyles = makeStyles(theme => ({
     },
 }));
 
-function SignUp({firebase, auth}) {
+export function SignUp({firebase, auth}) {
     
     const [email, SetEmail] = useState('');
     const [password, SetPassword] = useState('');
@@ -179,7 +179,7 @@ function SignUp({firebase, auth}) {
                             onClick={createUserwithCredentials}
                         >
                             Sign Up
-                    </Button>
+                        </Button>
                         <Button
                             type="button"
                             fullWidth
