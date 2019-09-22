@@ -96,12 +96,15 @@ const useStyles = makeStyles((theme: Theme) =>
     }),
 );
 
-function MainBoard({ firebase, tasks, userName, userId }: { firebase: any, tasks: any, userName: string, userId: string }) {
+function MainBoard({ firebase, tasks, teams, userName, userId }: { firebase: any, tasks: any, teams: any, userName: string, userId: string }) {
     const [dateFilter, setDateFilter] = useState<any>(null);
-
+    const [teamFilter, setTeamFilter] = useState(false);
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
     const [open, setOpen] = useState(true);
     const [selectedMenu, setSelectedMenu] = useState('');
+
+    
+
     const openAnchor = Boolean(anchorEl);
     const classes = useStyles();
     const theme = useTheme();
@@ -119,7 +122,7 @@ function MainBoard({ firebase, tasks, userName, userId }: { firebase: any, tasks
     }
 
     function handleOnCLickDateFilter() {
-        setDateFilter(new Date()); 
+        setDateFilter(new Date());
         setSelectedMenu('Today');
     }
 
@@ -127,10 +130,14 @@ function MainBoard({ firebase, tasks, userName, userId }: { firebase: any, tasks
         setDateFilter(new Date(Date.now() - 86400000));
         setSelectedMenu('Yesterday');
     }
-    
+
     function handleOnCLickNoDateFilter() {
         setDateFilter(null);
         setSelectedMenu('');
+    }
+
+    function handleOnCLickMyTeam() {
+        setTeamFilter(true);
     }
 
     function handleMenuOnClick(event: React.MouseEvent<HTMLElement>) {
@@ -143,14 +150,21 @@ function MainBoard({ firebase, tasks, userName, userId }: { firebase: any, tasks
     }
 
     function filterTasks(task: TaskType) {
+        if(teamFilter) {
+            console.log(teams[0].id, task)
+            if(task.userId !== teams[0].id) return false
+        }
+        else {
+            if(task.userId !== userId) return false;
+        }
         if (!dateFilter) return true;
         const taskDate = task.timestamp.toDate();
         if (taskDate.getFullYear() === dateFilter.getFullYear() &&
             taskDate.getMonth() === dateFilter.getMonth() &&
             taskDate.getDate() === dateFilter.getDate()
-        ){
+        ) {
             return true;
-        }  
+        }
         return false;
     }
 
@@ -214,27 +228,31 @@ function MainBoard({ firebase, tasks, userName, userId }: { firebase: any, tasks
                             Log Out
                         </MenuItem>
                     </Menu>
-                    <MenuItem 
-                        button 
-                        onClick={handleOnCLickDateFilter} 
-                        key={"Today"} 
-                        selected={selectedMenu==='Today'}
+                    <MenuItem
+                        button
+                        onClick={handleOnCLickDateFilter}
+                        key={"Today"}
+                        selected={selectedMenu === 'Today'}
                     >
                         <ListItemIcon><InboxIcon /></ListItemIcon>
                         <ListItemText primary={"Today"} />
                     </MenuItem>
-                    <MenuItem 
-                        button 
-                        onClick={handleOnCLickDateFilterYesterday} 
+                    <MenuItem
+                        button
+                        onClick={handleOnCLickDateFilterYesterday}
                         key={"Yesterday"}
-                        selected={selectedMenu==='Yesterday'}
+                        selected={selectedMenu === 'Yesterday'}
                     >
-                        <ListItemIcon><InboxIcon/></ListItemIcon>
+                        <ListItemIcon><InboxIcon /></ListItemIcon>
                         <ListItemText primary={"Yesterday"} />
                     </MenuItem>
                     <MenuItem id="Any time" button onClick={handleOnCLickNoDateFilter} key={"Any time"}>
                         <ListItemIcon><InboxIcon /></ListItemIcon>
                         <ListItemText primary={"Any time"} />
+                    </MenuItem>
+                    <MenuItem id="My team" button onClick={handleOnCLickMyTeam} key={"My team"}>
+                        <ListItemIcon><InboxIcon /></ListItemIcon>
+                        <ListItemText primary={"My team"} />
                     </MenuItem>
                 </List>
             </Drawer>
@@ -264,6 +282,7 @@ export default compose(
         console.log(store);
         return {
             tasks: store.firestore.ordered.tasks,
+            teams: store.firestore.ordered.teams,
             userName: store.firebase.auth.displayName,
             userId: store.firebase.auth.uid,
         }
@@ -271,8 +290,20 @@ export default compose(
     firestoreConnect(({ userId }: any) => {
         if (!userId) return [];
         return [{
+            collection: 'teams',
+            where: ['users', 'array-contains', userId]
+        }]
+    }),
+    firestoreConnect(({ userId, firestore }: any) => {
+        if (!userId) return [];
+        /*
+        if(firestore.ordered.teams) return [{
             collection: 'tasks',
-            where: ['userId', '==', userId]
+            where: ['userId', '==', firestore.ordered.teams[0].id]
+        }];
+        */
+        return [{
+            collection: 'tasks'
         }]
     }),
 )(MainBoard)
