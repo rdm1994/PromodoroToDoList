@@ -15,7 +15,8 @@ import { firestoreReducer, getFirestore, reduxFirestore } from 'redux-firestore'
 firebase.initializeApp(firebaseConfig);
 firebase.firestore();
 
-const initialState = {};
+const initialState = {
+};
 
 const middleWare = [thunk.withExtraArgument(getFirestore)];
 

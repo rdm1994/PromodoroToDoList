@@ -5,7 +5,7 @@ import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import CardActions from '@material-ui/core/CardActions';
-import Button from '@material-ui/core/Button'
+import Button from '@material-ui/core/Button';
 import { red } from '@material-ui/core/colors';
 import TextField from '@material-ui/core/TextField';
 import FormHelperText from '@material-ui/core/FormHelperText';

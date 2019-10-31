@@ -3,6 +3,7 @@ import React, { useState } from 'react'
 import { connect } from 'react-redux'
 import Task, { TaskType } from './Task'
 import CreateTask from './CreateTask';
+import Team from './Team';
 //Firebase
 import { compose } from 'redux'
 import { firestoreConnect } from 'react-redux-firebase'
@@ -137,7 +138,8 @@ function MainBoard({ firebase, tasks, teams, userName, userId }: { firebase: any
     }
 
     function handleOnCLickMyTeam() {
-        setTeamFilter(true);
+        setTeamFilter(!teamFilter);
+        console.log('lol');
     }
 
     function handleMenuOnClick(event: React.MouseEvent<HTMLElement>) {
@@ -250,10 +252,7 @@ function MainBoard({ firebase, tasks, teams, userName, userId }: { firebase: any
                         <ListItemIcon><InboxIcon /></ListItemIcon>
                         <ListItemText primary={"Any time"} />
                     </MenuItem>
-                    <MenuItem id="My team" button onClick={handleOnCLickMyTeam} key={"My team"}>
-                        <ListItemIcon><InboxIcon /></ListItemIcon>
-                        <ListItemText primary={"My team"} />
-                    </MenuItem>
+                    <Team OnClickMyTeam={handleOnCLickMyTeam}/>
                 </List>
             </Drawer>
             <main
