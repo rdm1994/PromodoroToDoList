@@ -65,7 +65,7 @@ function Login({ firebase, auth, history }) {
                 email,
                 password
             }).then(() => {
-                console.log('go main')
+                console.log('go main');
                 history.push('/');
             })
             return;

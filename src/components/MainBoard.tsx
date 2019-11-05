@@ -1,11 +1,11 @@
 //React
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { connect } from 'react-redux'
 import Task, { TaskType } from './Task'
 import CreateTask from './CreateTask';
 import Team from './Team';
 //Firebase
-import { compose } from 'redux'
+import { compose } from 'redux';
 import { firestoreConnect } from 'react-redux-firebase'
 //MUI
 import clsx from 'clsx'
@@ -71,6 +71,9 @@ const useStyles = makeStyles((theme: Theme) =>
             ...theme.mixins.toolbar,
             justifyContent: 'flex-end',
         },
+        divider: {
+            marginBottom: 5,
+        },
         content: {
             flexGrow: 1,
             display: 'flex',
@@ -104,7 +107,7 @@ function MainBoard({ firebase, tasks, teams, userName, userId }: { firebase: any
     const [open, setOpen] = useState(true);
     const [selectedMenu, setSelectedMenu] = useState('');
 
-    
+    useEffect(() => { }, []);
 
     const openAnchor = Boolean(anchorEl);
     const classes = useStyles();
@@ -152,12 +155,9 @@ function MainBoard({ firebase, tasks, teams, userName, userId }: { firebase: any
     }
 
     function filterTasks(task: TaskType) {
-        if(teamFilter) {
+        if (teamFilter) {
             console.log(teams[0].id, task)
-            if(task.userId !== teams[0].id) return false
-        }
-        else {
-            if(task.userId !== userId) return false;
+            if (task.userId !== teams[0].id) return false
         }
         if (!dateFilter) return true;
         const taskDate = task.timestamp.toDate();
@@ -210,6 +210,14 @@ function MainBoard({ firebase, tasks, teams, userName, userId }: { firebase: any
                 </div>
                 <Divider />
                 <List>
+                    <Typography
+                        component='h4'
+                        paragraph={true}
+                        align='center'
+                        color='primary'
+                    >
+                        YOUR PROFILE    
+                    </Typography>
                     <ListItem button onClick={handleMenuOnClick}>
                         <ListItemIcon><UserIcon /></ListItemIcon>
                         <ListItemText primary={userName} />
@@ -252,7 +260,16 @@ function MainBoard({ firebase, tasks, teams, userName, userId }: { firebase: any
                         <ListItemIcon><InboxIcon /></ListItemIcon>
                         <ListItemText primary={"Any time"} />
                     </MenuItem>
-                    <Team OnClickMyTeam={handleOnCLickMyTeam}/>
+                    <Divider className={classes.divider} />
+                    <Typography
+                        component='h4'
+                        paragraph={true}
+                        align='center'
+                        color='primary'
+                    >
+                        TEAMS
+                        </Typography>
+                    <Team OnClickMyTeam={handleOnCLickMyTeam} teamList={teams} />
                 </List>
             </Drawer>
             <main
@@ -295,6 +312,7 @@ export default compose(
     }),
     firestoreConnect(({ userId, firestore }: any) => {
         if (!userId) return [];
+        console.log('user Id: ' + userId);
         /*
         if(firestore.ordered.teams) return [{
             collection: 'tasks',
@@ -302,7 +320,8 @@ export default compose(
         }];
         */
         return [{
-            collection: 'tasks'
+            collection: 'tasks',
+            where: ['userId', '==', userId],
         }]
     }),
 )(MainBoard)
