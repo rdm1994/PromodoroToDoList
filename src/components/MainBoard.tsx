@@ -102,7 +102,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
 function MainBoard({ firebase, tasks, teams, userName, userId }: { firebase: any, tasks: any, teams: any, userName: string, userId: string }) {
     const [dateFilter, setDateFilter] = useState<any>(null);
-    const [teamFilter, setTeamFilter] = useState(false);
+    const [teamFilter, setTeamFilter] = useState<string>('');
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
     const [open, setOpen] = useState(true);
     const [selectedMenu, setSelectedMenu] = useState('');
@@ -140,9 +140,8 @@ function MainBoard({ firebase, tasks, teams, userName, userId }: { firebase: any
         setSelectedMenu('');
     }
 
-    function handleOnCLickMyTeam() {
-        setTeamFilter(!teamFilter);
-        console.log('lol');
+    function handleOnCLickMyTeam(teamId: string) {
+        !teamFilter ? setTeamFilter(teamId) : setTeamFilter('');
     }
 
     function handleMenuOnClick(event: React.MouseEvent<HTMLElement>) {
@@ -156,9 +155,12 @@ function MainBoard({ firebase, tasks, teams, userName, userId }: { firebase: any
 
     function filterTasks(task: TaskType) {
         if (teamFilter) {
-            console.log(teams[0].id, task)
-            if (task.userId !== teams[0].id) return false
+            console.log('what');
+            console.log(teamFilter);
+            console.log(task.userId);
+            if (task.userId !== teamFilter) return false
         }
+        else if (task.userId !== userId) return false;
         if (!dateFilter) return true;
         const taskDate = task.timestamp.toDate();
         if (taskDate.getFullYear() === dateFilter.getFullYear() &&
@@ -312,7 +314,6 @@ export default compose(
     }),
     firestoreConnect(({ userId, firestore }: any) => {
         if (!userId) return [];
-        console.log('user Id: ' + userId);
         /*
         if(firestore.ordered.teams) return [{
             collection: 'tasks',
@@ -321,7 +322,7 @@ export default compose(
         */
         return [{
             collection: 'tasks',
-            where: ['userId', '==', userId],
+           // where: ['userId', '==', userId],
         }]
     }),
 )(MainBoard)

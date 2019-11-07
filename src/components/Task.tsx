@@ -132,6 +132,7 @@ function Task({
 
     function handleSetTaskDone() {
         setTaskDone(taskId, !task.done);
+        clearTimer();
         setAnchorEl(null);
     }
 
