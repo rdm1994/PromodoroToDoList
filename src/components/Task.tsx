@@ -72,7 +72,8 @@ function Task({
     const [seconds, setSeconds] = useState(0);
     const [timeInterval, setTimeInterval] = useState();
     const [duration, setDuration] = useState(20);
-
+    console.log('==========task============')
+    console.log(task);
     //MIU declarations
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
     const classes = useStyles();
@@ -291,7 +292,7 @@ function Task({
 
 export default
     connect(({ firestore: { data }, firebase: { auth } }: { firestore: any, firebase: any }, props: any) => ({
-        task: data.tasks && data.tasks[props.taskId],
+        //task: data.tasks && data.tasks[props.taskId],
         userName: auth.displayName,
         userPhoto: auth.photoURL,
     }), (dispatch: any) => {

@@ -1,8 +1,4 @@
 import React from 'react'
-
-import clsx from 'clsx'
-import { makeStyles, useTheme, Theme, createStyles } from '@material-ui/core/styles'
-
 import ListItemIcon from '@material-ui/core/ListItemIcon'
 import ListItemText from '@material-ui/core/ListItemText'
 import InboxIcon from '@material-ui/icons/MoveToInbox'

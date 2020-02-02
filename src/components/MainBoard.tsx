@@ -7,6 +7,7 @@ import Team from './Team';
 //Firebase
 import { compose } from 'redux';
 import { firestoreConnect } from 'react-redux-firebase'
+import { flatten } from 'lodash'
 //MUI
 import clsx from 'clsx'
 import { makeStyles, useTheme, Theme, createStyles } from '@material-ui/core/styles'
@@ -100,14 +101,14 @@ const useStyles = makeStyles((theme: Theme) =>
     }),
 );
 
-function MainBoard({ firebase, tasks, teams, userName, userId }: { firebase: any, tasks: any, teams: any, userName: string, userId: string }) {
+function MainBoard({ firebase, tasks, teams, userName, userId, ttask }: { firebase: any, tasks: any, teams: any, userName: string, userId: string, ttask: any }) {
     const [dateFilter, setDateFilter] = useState<any>(null);
     const [teamFilter, setTeamFilter] = useState<string>('');
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
     const [open, setOpen] = useState(true);
     const [selectedMenu, setSelectedMenu] = useState('');
 
-    useEffect(() => { }, []);
+    useEffect(() => { console.log(ttask)}, [ttask]);
 
     const openAnchor = Boolean(anchorEl);
     const classes = useStyles();
@@ -158,9 +159,9 @@ function MainBoard({ firebase, tasks, teams, userName, userId }: { firebase: any
             console.log('what');
             console.log(teamFilter);
             console.log(task.userId);
-            if (task.userId !== teamFilter) return false
+            console.log(tasks);
+            if (task.userId !== teamFilter) return false; else return true;
         }
-        else if (task.userId !== userId) return false;
         if (!dateFilter) return true;
         const taskDate = task.timestamp.toDate();
         if (taskDate.getFullYear() === dateFilter.getFullYear() &&
@@ -218,7 +219,7 @@ function MainBoard({ firebase, tasks, teams, userName, userId }: { firebase: any
                         align='center'
                         color='primary'
                     >
-                        YOUR PROFILE    
+                        YOUR PROFILE
                     </Typography>
                     <ListItem button onClick={handleMenuOnClick}>
                         <ListItemIcon><UserIcon /></ListItemIcon>
@@ -284,12 +285,12 @@ function MainBoard({ firebase, tasks, teams, userName, userId }: { firebase: any
                     (tasks) ? tasks.filter(filterTasks).sort((a: TaskType, b: TaskType) => {
                         return b.timestamp.toDate().getTime() - a.timestamp.toDate().getTime();
                     }).map((task: any, index: number) => (
-                        <Task taskId={task.id} key={task.id} />
+                        <Task taskId={task.id} key={task.id} task={task}/>
                     )) : (
                             <Typography paragraph>Loading...</Typography>
                         )
                 }
-                <CreateTask />
+                <CreateTask teamId={teamFilter} />
             </main>
         </div>
     );
@@ -297,9 +298,20 @@ function MainBoard({ firebase, tasks, teams, userName, userId }: { firebase: any
 
 export default compose(
     connect((store: any) => {
+        console.log('=========store============');
         console.log(store);
         return {
-            tasks: store.firestore.ordered.tasks,
+            // if we have teams we merge user's task array with all teams' task arrays. Else we just return user's tasks array
+            tasks: store.firestore.ordered.teams ? 
+                store.firestore.ordered.tasks.concat(store.firestore.ordered.teams.map((x: any) => {
+                    return store.firestore.ordered[`tasks${x.id}`] ? store.firestore.ordered[`tasks${x.id}`] : [];
+                }).flat()) 
+                : store.firestore.ordered.tasks,
+            
+            ttask: store.firestore.ordered.teams ? flatten(store.firestore.ordered.teams.map((x: any) => {
+                return store.firestore.ordered[`tasks${x.id}`] ? store.firestore.ordered[`tasks${x.id}`] : {};
+            })) : null,
+
             teams: store.firestore.ordered.teams,
             userName: store.firebase.auth.displayName,
             userId: store.firebase.auth.uid,
@@ -312,17 +324,31 @@ export default compose(
             where: ['users', 'array-contains', userId]
         }]
     }),
-    firestoreConnect(({ userId, firestore }: any) => {
+    firestoreConnect(({ userId }: any) => {
         if (!userId) return [];
+        return [{
+            collection: 'tasks',
+            where: ['userId', '==', userId]
+        }]
+    }),
+    firestoreConnect(({ teams }: any) => {
+        if (!teams) return [];
+        console.log('============fireStoreConnect firestore================');
+        console.log(teams);
         /*
         if(firestore.ordered.teams) return [{
             collection: 'tasks',
             where: ['userId', '==', firestore.ordered.teams[0].id]
         }];
         */
-        return [{
+        let ids = teams.map((team: any) => team.id);
+        console.log(ids);
+        let res = ids.map((id: any, index: number) => ({
             collection: 'tasks',
-           // where: ['userId', '==', userId],
-        }]
+            where: ['userId', '==', id],
+            storeAs: `tasks${id}`,
+        }));
+        console.log(res);
+        return res;
     }),
 )(MainBoard)

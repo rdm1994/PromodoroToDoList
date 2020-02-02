@@ -44,15 +44,15 @@ const useStyles = makeStyles((theme: Theme) =>
     }),
 );
 
-export function CreateTask({ createTask }: { createTask: any }) {
-    const [task, setTask] = React.useState({ taskName: '', description: '' });
+export function CreateTask({ createTask, teamId }: { createTask: any, teamId: string }) {
+    const [task, setTask] = React.useState({ taskName: '', description: '', teamId: teamId });
     const [error, setError] = React.useState({ taskName: '', description: '' });
 
     const classes = useStyles();
 
     function handleCreateTask(e: any) {
         e.preventDefault();
-        if(error.taskName || error.description) return;
+        if (error.taskName || error.description) return;
         if (!task.taskName || !task.description) {
             setError({
                 ...error,
@@ -61,9 +61,8 @@ export function CreateTask({ createTask }: { createTask: any }) {
             });
             return;
         }
-        
         createTask(task);
-        setTask({ taskName: '', description: '' });
+        setTask({ taskName: '', description: '', teamId: '' });
     }
 
     function handleOnChange(e: any) {
@@ -71,15 +70,21 @@ export function CreateTask({ createTask }: { createTask: any }) {
         switch (e.target.name) {
             case 'taskName':
                 setTask({ ...task, taskName: e.target.value });
-                if (e.target.value === '') setError({ ...error, taskName: 'Enter name! ' });
-                else if(e.target.value.length > 20) setError({ ...error, taskName: 'Name should be less than 20 symbols! ' });
-                else setError({ ...error, taskName: '' });
+                if (e.target.value === '')
+                    setError({ ...error, taskName: 'Enter name! ' });
+                else if (e.target.value.length > 20)
+                    setError({ ...error, taskName: 'Name should be less than 20 symbols! ' });
+                else
+                    setError({ ...error, taskName: '' });
                 break;
             case 'description':
                 setTask({ ...task, description: e.target.value });
-                if (e.target.value === '') setError({ ...error, description: 'Enter description! ' });
-                else if(e.target.value.length > 50) setError({ ...error, description: 'Name should be less than 50 symbols! ' });
-                else setError({ ...error, description: '' });
+                if (e.target.value === '')
+                    setError({ ...error, description: 'Enter description! ' });
+                else if (e.target.value.length > 50)
+                    setError({ ...error, description: 'Name should be less than 50 symbols! ' });
+                else
+                    setError({ ...error, description: '' });
                 break;
             default:
                 return;
@@ -87,7 +92,7 @@ export function CreateTask({ createTask }: { createTask: any }) {
     }
 
     function cancel() {
-        setTask({ taskName: '', description: '' });
+        setTask({ taskName: '', description: '', teamId: '' });
     }
 
     return (
