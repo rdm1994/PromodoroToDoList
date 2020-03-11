@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react'
 import { connect } from 'react-redux'
 import Task, { TaskType } from './Task'
 import CreateTask from './CreateTask';
-import Team from './Team';
+import TeamList from './TeamList';
 //Firebase
 import { compose } from 'redux';
 import { firestoreConnect } from 'react-redux-firebase'
@@ -29,6 +29,7 @@ import InboxIcon from '@material-ui/icons/MoveToInbox'
 import UserIcon from '@material-ui/icons/AccountCircle'
 import Menu from '@material-ui/core/Menu'
 import MenuItem from '@material-ui/core/MenuItem'
+
 
 
 const drawerWidth = 240;
@@ -272,7 +273,7 @@ function MainBoard({ firebase, tasks, teams, userName, userId, ttask }: { fireba
                     >
                         TEAMS
                         </Typography>
-                    <Team OnClickMyTeam={handleOnCLickMyTeam} teamList={teams} />
+                    <TeamList OnClickMyTeam={handleOnCLickMyTeam} teamList={teams} />
                 </List>
             </Drawer>
             <main

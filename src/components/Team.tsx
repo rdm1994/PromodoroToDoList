@@ -1,35 +1,78 @@
 import React from 'react'
+import { connect } from 'react-redux';
 import ListItemIcon from '@material-ui/core/ListItemIcon'
 import ListItemText from '@material-ui/core/ListItemText'
-import InboxIcon from '@material-ui/icons/MoveToInbox'
-import MenuItem from '@material-ui/core/MenuItem'
-import Button from '@material-ui/core/Button'
-import Typography from '@material-ui/core/Typography'
+import GroupIcon from '@material-ui/icons/Group';
+import GroupAddIcon from '@material-ui/icons/GroupAdd';
+import MoreVertIcon from '@material-ui/icons/MoreVert';
+import ListIcon from '@material-ui/icons/List';
+import ListItem from '@material-ui/core/ListItem';
+import Typography from '@material-ui/core/Typography';
+import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
+import IconButton from '@material-ui/core/IconButton';
+import Menu from '@material-ui/core/Menu';
+import MenuItem from '@material-ui/core/MenuItem';
+import { deleteTeam } from '../redux/actions/teamActions';
 
-function Team({OnClickMyTeam, teamList} : any) {
+function Team({team, OnClickMyTeam, deleteTeam}: {team: any, OnClickMyTeam: any, deleteTeam: any}) {
+    const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
 
-    const createNewTeam = () => {
+    const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+        setAnchorEl(event.currentTarget);
+    };
 
-    }
+    const handleClose = () => {
+        setAnchorEl(null);
+    };
 
-    if (!teamList) return <MenuItem><Typography>team list loading</Typography></MenuItem>;
-    let list = teamList.map((team: any) => {
-        return(
-        <MenuItem id={team.id} button onClick={() => OnClickMyTeam(team.id)} key={team.id}>
-            <ListItemIcon><InboxIcon /></ListItemIcon>
-            <ListItemText primary={team.teamName} />
-        </MenuItem>)
-    })
+    const handleDelete = () => { 
+        deleteTeam(team.id);
+        setAnchorEl(null);
+    };
+
+    if (!team) return <ListItem><Typography>team loading...</Typography></ListItem>;
+
     return (
-        <>
-            {list}
-            <MenuItem>
-            <Button size="small" color="primary" onClick={createNewTeam}>
-                Create
-            </Button>
-            </MenuItem>
-        </>
+        <ListItem id={team.id} button onClick={() => OnClickMyTeam(team.id)} key={team.id}>
+            <ListItemIcon><GroupIcon /></ListItemIcon>
+            <ListItemText primary={team.teamName} />
+            <ListItemSecondaryAction>
+                <IconButton edge="end" aria-label="comments" onClick={handleClick}>
+                    <MoreVertIcon />
+                </IconButton>
+
+                <Menu
+                    id="simple-menu"
+                    anchorEl={anchorEl}
+                    keepMounted
+                    open={Boolean(anchorEl)}
+                    onClose={handleClose}
+                >
+                    <MenuItem onClick={handleClose}>
+                        <ListItemIcon>
+                            <GroupAddIcon fontSize="small" />
+                        </ListItemIcon>
+                        Invite to group
+                        </MenuItem>
+                    <MenuItem onClick={handleClose}>
+                        <ListItemIcon>
+                            <ListIcon fontSize="small" />
+                        </ListItemIcon>
+                        Show teammates
+                        </MenuItem>
+                    <MenuItem onClick={handleDelete}>
+                        
+                        Delete me from group
+                    </MenuItem>
+                </Menu>
+            </ListItemSecondaryAction>
+        </ListItem>
     )
 }
 
-export default Team
+export default
+    connect(null, (dispatch: any) => {
+        return {
+            deleteTeam: (teamId: string) => dispatch(deleteTeam(teamId)),
+        }
+    })(Team);
