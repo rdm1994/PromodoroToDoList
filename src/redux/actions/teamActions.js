@@ -22,12 +22,13 @@ export const deleteTeam = (teamId) => {
 export const createTeam = (team) => {
     return (dispatch, getState, getFirestore) => {
         const firestore = getFirestore();
-        firestore.collection('team').add({
+        firestore.collection('teams').add({
             ...team,
-            userIds: [getState().firebase.auth.uid],
+            users: [getState().firebase.auth.uid],
         }).then(() => {
             dispatch({ type: CREATE_TEAM, team });
         }).catch((err) => {
+            console.log(err);
             dispatch({ type: CREATE_TEAM_ERROR }, err);
         });
     }
