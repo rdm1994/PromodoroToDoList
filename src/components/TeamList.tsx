@@ -6,6 +6,7 @@ import Typography from '@material-ui/core/Typography';
 import TextField from '@material-ui/core/TextField'
 import Team from './Team';
 import { createTeam as createTeamAction } from '../redux/actions/teamActions';
+import { addTeam as addTeamAction } from '../redux/actions/teamActions';
 
 
 function TeamList(
@@ -13,12 +14,15 @@ function TeamList(
         OnClickMyTeam, 
         teamList, 
         createTeam, 
+        addTeam,
     }: {
         OnClickMyTeam: any, 
         teamList: any,
         createTeam: Function,
+        addTeam: Function,
     }) {
     const [team, setTeam] = React.useState({name:''});
+    const [teamId, setTeamId] = React.useState('');
     if (!teamList) return (
         <ListItem>
             <Typography>team list loading</Typography>
@@ -36,14 +40,23 @@ function TeamList(
         e.preventDefault();
         setTeam({...team, name: e.target.value});
     }
+    const handleChangeAdd = (e: any) => {
+        e.preventDefault();
+        setTeamId(e.target.value);
+    }
+    const handleAddTeam = (e: any) => {
+        e.preventDefault();
+        addTeam(teamId);
+    }
+
     return (
         <>
             {list}
             <ListItem>
                 <TextField
-                    id="description"
-                    name="description"
-                    label="Description"
+                    id="createteam"
+                    name="createteam"
+                    label="Team name"
                     required={true}
                     multiline
                     rows={1}
@@ -54,13 +67,27 @@ function TeamList(
                     Create
                 </Button>
             </ListItem>
+            <ListItem>
+                <TextField
+                    id="addteam"
+                    name="addteam"
+                    label="Team Id"
+                    required={true}
+                    value={teamId}
+                    onChange={handleChangeAdd}
+                ></TextField>
+                <Button size="small" color="primary" onClick={handleAddTeam}>
+                    Add
+                </Button>
+            </ListItem>
         </>
     )
 }
 
 const mapActionsToProps = (dispatch: any) => {
     return {
-        createTeam: (team: any) => dispatch(createTeamAction(team))
+        createTeam: (team: any) => dispatch(createTeamAction(team)),
+        addTeam: (teamId: any) => dispatch(addTeamAction(teamId)),
     }
 }
 

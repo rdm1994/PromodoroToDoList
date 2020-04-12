@@ -14,3 +14,5 @@ export const DELETE_TEAM = 'DELETE_TEAM';
 export const DELETE_TEAM_ERROR = 'DELETE_TEAM_ERROR';
 export const SET_USER = 'SET_USER';
 export const LOADING_USER = 'LOADING_USER';
+export const ADD_TEAM = 'ADD_TEAM';
+export const ADD_TEAM_ERROR = 'ADD_TEAM_ERROR';

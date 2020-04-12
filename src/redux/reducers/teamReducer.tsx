@@ -3,6 +3,8 @@ import {
     DELETE_TEAM_ERROR,
     CREATE_TEAM,
     CREATE_TEAM_ERROR,
+    ADD_TEAM,
+    ADD_TEAM_ERROR,
 } from '../types'
 
 const initialState = {};
@@ -29,6 +31,16 @@ export default function teamReducer(state=initialState, action: any) {
                 ...state,
                 createTeamErrors: action.err,
             };
+        case ADD_TEAM : 
+            return {
+                ...state,
+                addTeamErrors: null,
+            }
+        case ADD_TEAM_ERROR : 
+            return {
+                ...state,
+                addTeamErrors: action.err,
+            }
         default :
             return {
                 ...state

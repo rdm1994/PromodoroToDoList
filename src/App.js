@@ -3,8 +3,8 @@ import React from 'react'
 import Navbar from './components/Navbar'
 import MainRouter from './components/MainRouter'
 // Redux
-import { Provider } from 'react-redux';
-import store from './redux/store';
+import { Provider } from 'react-redux'
+import store from './redux/store'
 // FireBase
 import * as firebase from 'firebase'
 import { ReactReduxFirebaseProvider } from 'react-redux-firebase'
