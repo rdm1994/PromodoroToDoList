@@ -304,9 +304,11 @@ export default compose(
         return {
             // if we have teams we merge user's task array with all teams' task arrays. Else we just return user's tasks array
             tasks: store.firestore.ordered.teams ? 
-                store.firestore.ordered.tasks.concat(store.firestore.ordered.teams.map((x: any) => {
-                    return store.firestore.ordered[`tasks${x.id}`] ? store.firestore.ordered[`tasks${x.id}`] : [];
-                }).flat()) 
+                store.firestore.ordered.tasks.concat(
+                    flatten(
+                        store.firestore.ordered.teams.map((x: any) => {
+                            return store.firestore.ordered[`tasks${x.id}`] ? store.firestore.ordered[`tasks${x.id}`] : [];
+                }))) 
                 : store.firestore.ordered.tasks,
             
             ttask: store.firestore.ordered.teams ? flatten(store.firestore.ordered.teams.map((x: any) => {

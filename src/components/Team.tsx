@@ -1,5 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux';
+import copy from 'copy-to-clipboard';
 import ListItemIcon from '@material-ui/core/ListItemIcon'
 import ListItemText from '@material-ui/core/ListItemText'
 import GroupIcon from '@material-ui/icons/Group';
@@ -26,6 +27,11 @@ function Team({team, OnClickMyTeam, deleteTeam}: {team: any, OnClickMyTeam: any,
         setAnchorEl(null);
     };
 
+    const handleInvite = () => {
+        copy(team.id);
+        setAnchorEl(null);
+    }
+
     const handleDelete = () => { 
         deleteTeam(team.id);
         setAnchorEl(null);
@@ -49,7 +55,7 @@ function Team({team, OnClickMyTeam, deleteTeam}: {team: any, OnClickMyTeam: any,
                     open={Boolean(anchorEl)}
                     onClose={handleClose}
                 >
-                    <MenuItem onClick={handleClose}>
+                    <MenuItem onClick={handleInvite}>
                         <ListItemIcon>
                             <GroupAddIcon fontSize="small" />
                         </ListItemIcon>
