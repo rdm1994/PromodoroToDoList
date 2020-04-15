@@ -35,6 +35,7 @@ function TeamList(
     const handleCreateTeam = (e: any) => {
         e.preventDefault();
         createTeam(team);
+        setTeam({name: ''});
     }
     const handleChange = (e: any) => {
         e.preventDefault();

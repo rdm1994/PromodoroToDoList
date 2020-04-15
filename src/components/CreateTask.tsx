@@ -1,10 +1,11 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { connect } from 'react-redux'
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
 
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import CardActions from '@material-ui/core/CardActions';
+import Typography from '@material-ui/core/Typography'
 import Button from '@material-ui/core/Button';
 import { red } from '@material-ui/core/colors';
 import TextField from '@material-ui/core/TextField';
@@ -18,7 +19,7 @@ const useStyles = makeStyles((theme: Theme) =>
     createStyles({
         card: {
             width: 310,
-            maxHeight: 230,
+            maxHeight: 260,
             margin: theme.spacing(3),
         },
         media: {
@@ -40,36 +41,41 @@ const useStyles = makeStyles((theme: Theme) =>
         },
         textField: {
             marginTop: 18,
+            marginBottom: 5,
         }
     }),
 );
 
 export function CreateTask({ createTask, teamId }: { createTask: any, teamId: string }) {
-    const [task, setTask] = React.useState({ taskName: '', description: '', teamId: teamId });
-    const [error, setError] = React.useState({ taskName: '', description: '' });
+    const [newTask, setNewTask] = useState({ taskName: '', description: '', userId: teamId });
+    const [error, setError] = useState({ taskName: '', description: '', userId: '' });
+
+    useEffect(() => {
+        setNewTask({ ...newTask, userId: teamId })
+    }, [teamId]);
 
     const classes = useStyles();
 
     function handleCreateTask(e: any) {
         e.preventDefault();
         if (error.taskName || error.description) return;
-        if (!task.taskName || !task.description) {
+        if (!newTask.taskName || !newTask.description) {
             setError({
                 ...error,
-                taskName: (!task.taskName) ? 'Enter name! ' : '',
-                description: (!task.description) ? 'Enter description! ' : '',
+                taskName: (!newTask.taskName) ? 'Enter name! ' : '',
+                description: (!newTask.description) ? 'Enter description! ' : '',
             });
             return;
         }
-        createTask(task);
-        setTask({ taskName: '', description: '', teamId: '' });
+        createTask(newTask);
+        setNewTask({ ...newTask,  taskName: '', description: '' });
     }
 
     function handleOnChange(e: any) {
         e.preventDefault();
         switch (e.target.name) {
             case 'taskName':
-                setTask({ ...task, taskName: e.target.value });
+                setNewTask({ ...newTask, taskName: e.target.value });
                 if (e.target.value === '')
                     setError({ ...error, taskName: 'Enter name! ' });
                 else if (e.target.value.length > 20)
@@ -78,7 +84,7 @@ export function CreateTask({ createTask, teamId }: { createTask: any, teamId: st
                     setError({ ...error, taskName: '' });
                 break;
             case 'description':
-                setTask({ ...task, description: e.target.value });
+                setNewTask({ ...newTask, description: e.target.value });
                 if (e.target.value === '')
                     setError({ ...error, description: 'Enter description! ' });
                 else if (e.target.value.length > 50)
@@ -92,7 +98,7 @@ export function CreateTask({ createTask, teamId }: { createTask: any, teamId: st
     }
 
     function cancel() {
-        setTask({ taskName: '', description: '', teamId: '' });
+        setNewTask({ ...newTask, taskName: '', description: '' });
     }
 
     return (
@@ -104,7 +110,7 @@ export function CreateTask({ createTask, teamId }: { createTask: any, teamId: st
                     label="Task Name"
                     required={true}
                     error={Boolean(error.taskName)}
-                    value={task.taskName}
+                    value={newTask.taskName}
                     onChange={handleOnChange}
                 ></TextField>
                 {error.taskName && (
@@ -121,7 +127,7 @@ export function CreateTask({ createTask, teamId }: { createTask: any, teamId: st
                     multiline
                     rows={2}
                     error={Boolean(error.description)}
-                    value={task.description}
+                    value={newTask.description}
                     onChange={handleOnChange}
                 ></TextField>
                 {error.description && (
@@ -129,6 +135,15 @@ export function CreateTask({ createTask, teamId }: { createTask: any, teamId: st
                         {error.description}
                     </FormHelperText>
                 )}
+                <Typography
+                    component='h4'
+                    paragraph={true}
+                    align='center'
+                    color='primary'
+                >
+                    { teamId && 'Task wil be created in selected group' }
+                </Typography>
+
             </CardContent>
             <CardActions>
                 <Button size="small" color="primary" onClick={handleCreateTask}>

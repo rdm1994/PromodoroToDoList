@@ -12,10 +12,12 @@ import {
 export const createTask = (task) => {
     return (dispatch, getState, getFirestore) => {
         const firestore = getFirestore();
+        console.log('action');
+        console.log(task);
+        if(!task.userId) task.userId = getState().firebase.auth.uid;
         firestore.collection('tasks').add({
             ...task,
             totalTime: 0,
-            userId: getState().firebase.auth.uid,
             timestamp: new Date(),
             done: false,
         }).then(() => {

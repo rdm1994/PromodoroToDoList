@@ -156,11 +156,7 @@ function MainBoard({ firebase, tasks, teams, userName, userId, ttask }: { fireba
     }
 
     function filterTasks(task: TaskType) {
-        if (teamFilter) {
-            console.log('what');
-            console.log(teamFilter);
-            console.log(task.userId);
-            console.log(tasks);
+        if (teamFilter) { 
             if (task.userId !== teamFilter) return false; else return true;
         }
         if (!dateFilter) return true;

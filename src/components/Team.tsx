@@ -59,7 +59,7 @@ function Team({team, OnClickMyTeam, deleteTeam}: {team: any, OnClickMyTeam: any,
                         <ListItemIcon>
                             <GroupAddIcon fontSize="small" />
                         </ListItemIcon>
-                        Invite to group
+                        Invite to team
                         </MenuItem>
                     <MenuItem onClick={handleClose}>
                         <ListItemIcon>
