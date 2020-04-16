@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { connect } from 'react-redux'
 import ListItem from '@material-ui/core/ListItem';
 import Button from '@material-ui/core/Button';
@@ -10,36 +10,43 @@ import { addTeam as addTeamAction } from '../redux/actions/teamActions';
 
 
 function TeamList(
-    { 
-        OnClickMyTeam, 
-        teamList, 
-        createTeam, 
+    {
+        OnClickMyTeam,
+        teamList,
+        createTeam,
         addTeam,
     }: {
-        OnClickMyTeam: any, 
+        OnClickMyTeam: any,
         teamList: any,
         createTeam: Function,
         addTeam: Function,
     }) {
-    const [team, setTeam] = React.useState({name:''});
-    const [teamId, setTeamId] = React.useState('');
+    const [team, setTeam] = useState({ name: '' });
+    const [teamId, setTeamId] = useState('');
+    const [selectedTeam, setSelectedTeam] = useState('');
+
     if (!teamList) return (
         <ListItem>
             <Typography>team list loading</Typography>
         </ListItem>);
+
+    const handleClickMyTeam = (teamId: string) => {
+        (teamId === selectedTeam)? setSelectedTeam('') : setSelectedTeam(teamId)
+        OnClickMyTeam(teamId);
+    }
     let list = teamList.map((team: any) => {
         return (
-            <Team team={team} OnClickMyTeam={OnClickMyTeam}/>
+            <Team team={team} OnClickMyTeam={handleClickMyTeam} selected={selectedTeam == team.id} />
         )
     })
     const handleCreateTeam = (e: any) => {
         e.preventDefault();
         createTeam(team);
-        setTeam({name: ''});
+        setTeam({ name: '' });
     }
     const handleChange = (e: any) => {
         e.preventDefault();
-        setTeam({...team, name: e.target.value});
+        setTeam({ ...team, name: e.target.value });
     }
     const handleChangeAdd = (e: any) => {
         e.preventDefault();

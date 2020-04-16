@@ -143,7 +143,7 @@ function MainBoard({ firebase, tasks, teams, userName, userId, ttask }: { fireba
     }
 
     function handleOnCLickMyTeam(teamId: string) {
-        !teamFilter ? setTeamFilter(teamId) : setTeamFilter('');
+        (teamFilter !== teamId) ? setTeamFilter(teamId) : setTeamFilter('');
     }
 
     function handleMenuOnClick(event: React.MouseEvent<HTMLElement>) {

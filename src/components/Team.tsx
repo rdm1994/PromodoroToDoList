@@ -16,7 +16,7 @@ import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import { deleteTeam } from '../redux/actions/teamActions';
 
-function Team({team, OnClickMyTeam, deleteTeam}: {team: any, OnClickMyTeam: any, deleteTeam: any}) {
+function Team({team, OnClickMyTeam, deleteTeam, selected}: {team: any, OnClickMyTeam: any, deleteTeam: any, selected: any}) {
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
 
     const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -40,14 +40,21 @@ function Team({team, OnClickMyTeam, deleteTeam}: {team: any, OnClickMyTeam: any,
     if (!team) return <ListItem><Typography>team loading...</Typography></ListItem>;
 
     return (
-        <ListItem id={team.id} button onClick={() => OnClickMyTeam(team.id)} key={team.id}>
-            <ListItemIcon><GroupIcon /></ListItemIcon>
+        <ListItem 
+            id={team.id} 
+            button 
+            onClick={() => OnClickMyTeam(team.id)} 
+            key={team.id}
+            selected={selected}
+        >
+            <ListItemIcon>
+                <GroupIcon />
+            </ListItemIcon>
             <ListItemText primary={team.name} />
             <ListItemSecondaryAction>
                 <IconButton edge="end" aria-label="comments" onClick={handleClick}>
                     <MoreVertIcon />
                 </IconButton>
-
                 <Menu
                     id="simple-menu"
                     anchorEl={anchorEl}
