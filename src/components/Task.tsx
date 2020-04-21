@@ -70,7 +70,7 @@ function Task({
     const [offset, setOffset] = useState(0);
     const [minutes, setMinutes] = useState(0);
     const [seconds, setSeconds] = useState(0);
-    const [timeInterval, setTimeInterval] = useState();
+    const [timeInterval, setTimeInterval] = useState<any>();
     const [duration, setDuration] = useState(20);
     console.log('==========task============')
     console.log(task);
@@ -293,7 +293,7 @@ function Task({
 export default
     connect(({ firestore: { data }, firebase: { auth } }: { firestore: any, firebase: any }, props: any) => ({
         //task: data.tasks && data.tasks[props.taskId],
-        userName: auth.displayName,
+        userName: (data.teams && data.teams[props.task.userId] && data.teams[props.task.userId].name ) || auth.displayName,
         userPhoto: auth.photoURL,
     }), (dispatch: any) => {
         return {

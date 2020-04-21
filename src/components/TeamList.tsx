@@ -36,7 +36,7 @@ function TeamList(
     }
     let list = teamList.map((team: any) => {
         return (
-            <Team team={team} OnClickMyTeam={handleClickMyTeam} selected={selectedTeam == team.id} />
+            <Team team={team} OnClickMyTeam={handleClickMyTeam} selected={selectedTeam == team.id} key={team.id}/>
         )
     })
     const handleCreateTeam = (e: any) => {

@@ -69,7 +69,6 @@ const useStyles = makeStyles((theme: Theme) =>
         drawerHeader: {
             display: 'flex',
             alignItems: 'center',
-            padding: '0 8px',
             ...theme.mixins.toolbar,
             justifyContent: 'flex-end',
         },
@@ -109,7 +108,7 @@ function MainBoard({ firebase, tasks, teams, userName, userId, ttask }: { fireba
     const [open, setOpen] = useState(true);
     const [selectedMenu, setSelectedMenu] = useState('');
 
-    useEffect(() => { console.log(ttask)}, [ttask]);
+    useEffect(() => { console.log(ttask) }, [ttask]);
 
     const openAnchor = Boolean(anchorEl);
     const classes = useStyles();
@@ -128,13 +127,23 @@ function MainBoard({ firebase, tasks, teams, userName, userId, ttask }: { fireba
     }
 
     function handleOnCLickDateFilter() {
-        setDateFilter(new Date());
-        setSelectedMenu('Today');
+        if (selectedMenu === 'Today') {
+            setDateFilter(null);
+            setSelectedMenu('');
+        } else {
+            setDateFilter(new Date());
+            setSelectedMenu('Today');
+        }
     }
 
     function handleOnCLickDateFilterYesterday() {
-        setDateFilter(new Date(Date.now() - 86400000));
-        setSelectedMenu('Yesterday');
+        if (selectedMenu === 'Yesterday') {
+            setDateFilter(null);
+            setSelectedMenu('');
+        } else {
+            setDateFilter(new Date(Date.now() - 86400000));
+            setSelectedMenu('Yesterday');
+        }
     }
 
     function handleOnCLickNoDateFilter() {
@@ -156,8 +165,8 @@ function MainBoard({ firebase, tasks, teams, userName, userId, ttask }: { fireba
     }
 
     function filterTasks(task: TaskType) {
-        if (teamFilter) { 
-            if (task.userId !== teamFilter) return false; else return true;
+        if (teamFilter) {
+            if (task.userId !== teamFilter) return false;
         }
         if (!dateFilter) return true;
         const taskDate = task.timestamp.toDate();
@@ -282,7 +291,7 @@ function MainBoard({ firebase, tasks, teams, userName, userId, ttask }: { fireba
                     (tasks) ? tasks.filter(filterTasks).sort((a: TaskType, b: TaskType) => {
                         return b.timestamp.toDate().getTime() - a.timestamp.toDate().getTime();
                     }).map((task: any, index: number) => (
-                        <Task taskId={task.id} key={task.id} task={task}/>
+                        <Task taskId={task.id} key={task.id} task={task} />
                     )) : (
                             <Typography paragraph>Loading...</Typography>
                         )
@@ -299,14 +308,14 @@ export default compose(
         console.log(store);
         return {
             // if we have teams we merge user's task array with all teams' task arrays. Else we just return user's tasks array
-            tasks: store.firestore.ordered.teams ? 
+            tasks: store.firestore.ordered.teams ?
                 store.firestore.ordered.tasks.concat(
                     flatten(
                         store.firestore.ordered.teams.map((x: any) => {
                             return store.firestore.ordered[`tasks${x.id}`] ? store.firestore.ordered[`tasks${x.id}`] : [];
-                }))) 
+                        })))
                 : store.firestore.ordered.tasks,
-            
+
             ttask: store.firestore.ordered.teams ? flatten(store.firestore.ordered.teams.map((x: any) => {
                 return store.firestore.ordered[`tasks${x.id}`] ? store.firestore.ordered[`tasks${x.id}`] : {};
             })) : null,
