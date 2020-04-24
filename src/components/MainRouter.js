@@ -5,6 +5,7 @@ import PrivateRoute from './PrivateRoute'
 import MainBoard from './MainBoard'
 import Login from './Login'
 import SignUp from './SignUp'
+import Teammates from './Teammates'
 import Page404 from './Page404'
 
 function MainRouter(props) {
@@ -16,6 +17,7 @@ function MainRouter(props) {
                         <PrivateRoute path="/" exact component={MainBoard} />
                         <Route path="/login" component={Login} />
                         <Route path="/signup" component={SignUp} />
+                        <Route path="/teammates" component={Teammates} />
                         <Route component={Page404} />
                     </Switch>
                 </Router>

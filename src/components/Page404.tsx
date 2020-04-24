@@ -13,20 +13,20 @@ const useStyles = makeStyles(theme => ({
     }
 }))
 
-export const Page404 = ({ history }) => {
+export const Page404 = ({ history }: { history: any }) => {
     const classes = useStyles();
 
     const handleOnClick = () => {
         history.push('/');
     }
     return (
-        <Box 
+        <Box
             className={classes.container}
             display="flex"
             flexDirection="column"
-            alignItems="center"    
+            alignItems="center"
         >
-            <Typography variant="h4" noWrap align='center' margin="normal">
+            <Typography variant="h4" noWrap align='center'>
                 PAGE NOT FOUND! SORRY <span role="img" aria-label="sad">😢</span>
             </Typography>
             <Button
