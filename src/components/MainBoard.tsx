@@ -101,14 +101,12 @@ const useStyles = makeStyles((theme: Theme) =>
     }),
 );
 
-function MainBoard({ firebase, tasks, teams, userName, userId, ttask }: { firebase: any, tasks: any, teams: any, userName: string, userId: string, ttask: any }) {
+function MainBoard({ firebase, tasks, teams, userName, userId}: { firebase: any, tasks: any, teams: any, userName: string, userId: string}) {
     const [dateFilter, setDateFilter] = useState<any>(null);
     const [teamFilter, setTeamFilter] = useState<string>('');
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
     const [open, setOpen] = useState(true);
     const [selectedMenu, setSelectedMenu] = useState('');
-
-    useEffect(() => { console.log(ttask) }, [ttask]);
 
     const openAnchor = Boolean(anchorEl);
     const classes = useStyles();
@@ -315,11 +313,6 @@ export default compose(
                             return store.firestore.ordered[`tasks${x.id}`] ? store.firestore.ordered[`tasks${x.id}`] : [];
                         })))
                 : store.firestore.ordered.tasks,
-
-            ttask: store.firestore.ordered.teams ? flatten(store.firestore.ordered.teams.map((x: any) => {
-                return store.firestore.ordered[`tasks${x.id}`] ? store.firestore.ordered[`tasks${x.id}`] : {};
-            })) : null,
-
             teams: store.firestore.ordered.teams,
             userName: store.firebase.auth.displayName,
             userId: store.firebase.auth.uid,
@@ -341,14 +334,6 @@ export default compose(
     }),
     firestoreConnect(({ teams }: any) => {
         if (!teams) return [];
-        console.log('============fireStoreConnect firestore================');
-        console.log(teams);
-        /*
-        if(firestore.ordered.teams) return [{
-            collection: 'tasks',
-            where: ['userId', '==', firestore.ordered.teams[0].id]
-        }];
-        */
         let ids = teams.map((team: any) => team.id);
         console.log(ids);
         let res = ids.map((id: any, index: number) => ({

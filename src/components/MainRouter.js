@@ -17,7 +17,7 @@ function MainRouter(props) {
                         <PrivateRoute path="/" exact component={MainBoard} />
                         <Route path="/login" component={Login} />
                         <Route path="/signup" component={SignUp} />
-                        <Route path="/teammates" component={Teammates} />
+                        <Route path="/teammates/:id" component={Teammates} />
                         <Route component={Page404} />
                     </Switch>
                 </Router>
