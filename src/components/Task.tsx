@@ -17,6 +17,7 @@ import Tooltip from '@material-ui/core/Tooltip'
 import Menu from '@material-ui/core/Menu'
 import MenuItem from '@material-ui/core/MenuItem'
 import { red } from '@material-ui/core/colors'
+
 import PopperJs from 'popper.js'
 import { firestore } from 'firebase';
 import { deleteTask, setTaskTotalTime, setTaskDone } from '../redux/actions/taskActions'
@@ -72,8 +73,6 @@ function Task({
     const [seconds, setSeconds] = useState(0);
     const [timeInterval, setTimeInterval] = useState<any>();
     const [duration, setDuration] = useState(20);
-    console.log('==========task============')
-    console.log(task);
     //MIU declarations
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
     const classes = useStyles();

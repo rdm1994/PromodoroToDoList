@@ -15,9 +15,11 @@ import IconButton from '@material-ui/core/IconButton';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import { deleteTeam } from '../redux/actions/teamActions';
+import { useHistory } from "react-router-dom";
 
 function Team({team, OnClickMyTeam, deleteTeam, selected}: {team: any, OnClickMyTeam: any, deleteTeam: any, selected: any}) {
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+    const history = useHistory();
 
     const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
         setAnchorEl(event.currentTarget);
@@ -30,6 +32,11 @@ function Team({team, OnClickMyTeam, deleteTeam, selected}: {team: any, OnClickMy
     const handleInvite = () => {
         copy(team.id);
         setAnchorEl(null);
+    }
+
+    const handleTeammates = () => {
+        setAnchorEl(null);
+        history.push(`teammates/${team.id}`);
     }
 
     const handleDelete = () => { 
@@ -68,7 +75,7 @@ function Team({team, OnClickMyTeam, deleteTeam, selected}: {team: any, OnClickMy
                         </ListItemIcon>
                         Invite to team
                         </MenuItem>
-                    <MenuItem onClick={handleClose}>
+                    <MenuItem onClick={handleTeammates}>
                         <ListItemIcon>
                             <ListIcon fontSize="small" />
                         </ListItemIcon>
