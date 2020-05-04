@@ -18,7 +18,7 @@ import { createTask as createTaskAction } from '../redux/actions/taskActions';
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
         card: {
-            width: 310,
+            width: 330,
             maxHeight: 260,
             margin: theme.spacing(3),
         },
@@ -54,7 +54,7 @@ export function CreateTask({ createTask, teamId }: { createTask: any, teamId: st
         setNewTask({ ...newTask, userId: teamId })
     }, [teamId]);
 
-    const classes = useStyles();
+    const classes = useStyles({});
 
     function handleCreateTask(e: any) {
         e.preventDefault();

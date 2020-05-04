@@ -1,12 +1,13 @@
 import React, { useState } from 'react'
 import { connect } from 'react-redux'
-import ListItem from '@material-ui/core/ListItem';
-import Button from '@material-ui/core/Button';
-import Typography from '@material-ui/core/Typography';
+import ListItem from '@material-ui/core/ListItem'
+import Button from '@material-ui/core/Button'
+import Typography from '@material-ui/core/Typography'
 import TextField from '@material-ui/core/TextField'
-import Team from './Team';
-import { createTeam as createTeamAction } from '../redux/actions/teamActions';
-import { addTeam as addTeamAction } from '../redux/actions/teamActions';
+import Team from './Team'
+import { createTeam as createTeamAction } from '../redux/actions/teamActions'
+import { addTeam as addTeamAction } from '../redux/actions/teamActions'
+import { createToast as createToastAction} from '../redux/actions/toastActions'
 
 
 function TeamList(
@@ -15,11 +16,13 @@ function TeamList(
         teamList,
         createTeam,
         addTeam,
+        toast
     }: {
         OnClickMyTeam: any,
         teamList: any,
         createTeam: Function,
         addTeam: Function,
+        toast: Function,
     }) {
     const [team, setTeam] = useState({ name: '' });
     const [teamId, setTeamId] = useState('');
@@ -42,6 +45,8 @@ function TeamList(
     const handleCreateTeam = (e: any) => {
         e.preventDefault();
         createTeam(team);
+        toast({message: 'team created!', severity: 'success'});
+        console.log('ok');
         setTeam({ name: '' });
     }
     const handleChange = (e: any) => {
@@ -96,6 +101,7 @@ const mapActionsToProps = (dispatch: any) => {
     return {
         createTeam: (team: any) => dispatch(createTeamAction(team)),
         addTeam: (teamId: any) => dispatch(addTeamAction(teamId)),
+        toast: (toast: any) => dispatch(createToastAction(toast)),
     }
 }
 

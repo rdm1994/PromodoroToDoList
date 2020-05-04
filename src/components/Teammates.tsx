@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react'
+import React from 'react'
 import { connect } from 'react-redux'
 import { compose } from 'redux';
 import { firestoreConnect } from 'react-redux-firebase'
@@ -31,13 +31,7 @@ const useStyles = makeStyles(theme => ({
 }))
 
 export const Teammates = ({ teams, users, history }: {teams: any, users: any, history: any}) => {
-    const classes = useStyles();
-
-    useEffect(()=> {
-        console.log('====users===');
-        console.log(users);
-
-    }, [users, teams]);
+    const classes = useStyles({});
 
     const handleOnClick = () => {
         history.push('/');

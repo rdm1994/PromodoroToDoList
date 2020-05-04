@@ -2,6 +2,7 @@ import React from 'react'
 // Components
 import Navbar from './components/Navbar'
 import MainRouter from './components/MainRouter'
+import Snackbar from './components/Snackbar'
 // Redux
 import { Provider } from 'react-redux'
 import store from './redux/store'
@@ -28,6 +29,7 @@ function App() {
       <ReactReduxFirebaseProvider {...rrfProps}>
         <Navbar />
         <MainRouter />
+        <Snackbar />
       </ReactReduxFirebaseProvider>
     </Provider>
   );

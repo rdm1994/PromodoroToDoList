@@ -75,7 +75,7 @@ function Task({
     const [duration, setDuration] = useState(20);
     //MIU declarations
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-    const classes = useStyles();
+    const classes = useStyles({});
     const open = Boolean(anchorEl);
     const radius = 86;
 

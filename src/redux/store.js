@@ -9,7 +9,8 @@ import 'firebase/firestore'
 // Reducers
 import userReducer from './reducers/userReducer'
 import taskReducer from './reducers/taskReducer'
-import teamReducer from './reducers/teamReducer';
+import teamReducer from './reducers/teamReducer'
+import toastReducer from './reducers/toastReduser'
 import { firebaseReducer } from 'react-redux-firebase'
 import { firestoreReducer, getFirestore, reduxFirestore } from 'redux-firestore'
 
@@ -25,6 +26,7 @@ const reducers = combineReducers({
     user: userReducer,
     task: taskReducer,
     team: teamReducer,
+    toasts: toastReducer,
     firebase: firebaseReducer,
     firestore: firestoreReducer
 })
@@ -35,7 +37,7 @@ const store = createStore(
     compose( 
         applyMiddleware(...middleWare), 
         reduxFirestore(firebase),
-        //window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
+        window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
     ));
 
 export default store;

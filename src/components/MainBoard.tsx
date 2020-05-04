@@ -109,7 +109,7 @@ function MainBoard({ firebase, tasks, teams, userName, userId}: { firebase: any,
     const [selectedMenu, setSelectedMenu] = useState('');
 
     const openAnchor = Boolean(anchorEl);
-    const classes = useStyles();
+    const classes = useStyles({});
     const theme = useTheme();
 
     function handleDrawerOpen() {
@@ -284,6 +284,7 @@ function MainBoard({ firebase, tasks, teams, userName, userId}: { firebase: any,
                     [classes.contentShift]: open,
                 })}
             >
+                <CreateTask teamId={teamFilter} />
                 <div className={classes.drawerHeader} />
                 {
                     (tasks) ? tasks.filter(filterTasks).sort((a: TaskType, b: TaskType) => {
@@ -294,7 +295,6 @@ function MainBoard({ firebase, tasks, teams, userName, userId}: { firebase: any,
                             <Typography paragraph>Loading...</Typography>
                         )
                 }
-                <CreateTask teamId={teamFilter} />
             </main>
         </div>
     );
