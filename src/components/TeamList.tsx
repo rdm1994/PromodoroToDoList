@@ -7,8 +7,8 @@ import TextField from '@material-ui/core/TextField'
 import Team from './Team'
 import { createTeam as createTeamAction } from '../redux/actions/teamActions'
 import { addTeam as addTeamAction } from '../redux/actions/teamActions'
-import { createToast as createToastAction} from '../redux/actions/toastActions'
-
+import { addToast as addToastAction } from '../redux/actions/toastActions'
+import { Toast } from './Snackbar'
 
 function TeamList(
     {
@@ -34,19 +34,18 @@ function TeamList(
         </ListItem>);
 
     const handleClickMyTeam = (teamId: string) => {
-        (teamId === selectedTeam)? setSelectedTeam('') : setSelectedTeam(teamId)
+        (teamId === selectedTeam) ? setSelectedTeam('') : setSelectedTeam(teamId)
         OnClickMyTeam(teamId);
     }
     let list = teamList.map((team: any) => {
         return (
-            <Team team={team} OnClickMyTeam={handleClickMyTeam} selected={selectedTeam == team.id} key={team.id}/>
+            <Team team={team} OnClickMyTeam={handleClickMyTeam} selected={selectedTeam === team.id} key={team.id} />
         )
     })
     const handleCreateTeam = (e: any) => {
         e.preventDefault();
         createTeam(team);
-        toast({message: 'team created!', severity: 'success'});
-        console.log('ok');
+        toast({ message: `Team ${team.name} created!`, severity: 'success' });
         setTeam({ name: '' });
     }
     const handleChange = (e: any) => {
@@ -60,6 +59,8 @@ function TeamList(
     const handleAddTeam = (e: any) => {
         e.preventDefault();
         addTeam(teamId);
+        setTeamId('');
+        toast({ message: `Team added!`, severity: 'success' });
     }
 
     return (
@@ -100,8 +101,8 @@ function TeamList(
 const mapActionsToProps = (dispatch: any) => {
     return {
         createTeam: (team: any) => dispatch(createTeamAction(team)),
-        addTeam: (teamId: any) => dispatch(addTeamAction(teamId)),
-        toast: (toast: any) => dispatch(createToastAction(toast)),
+        addTeam: (teamId: String) => dispatch(addTeamAction(teamId)),
+        toast: (toast: Toast) => dispatch(addToastAction(toast)),
     }
 }
 

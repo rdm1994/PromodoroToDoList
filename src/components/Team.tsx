@@ -1,23 +1,37 @@
 import React from 'react'
-import { connect } from 'react-redux';
-import copy from 'copy-to-clipboard';
+import { connect } from 'react-redux'
+import copy from 'copy-to-clipboard'
 import ListItemIcon from '@material-ui/core/ListItemIcon'
 import ListItemText from '@material-ui/core/ListItemText'
-import GroupIcon from '@material-ui/icons/Group';
-import GroupAddIcon from '@material-ui/icons/GroupAdd';
-import MoreVertIcon from '@material-ui/icons/MoreVert';
-import ListIcon from '@material-ui/icons/List';
+import GroupIcon from '@material-ui/icons/Group'
+import GroupAddIcon from '@material-ui/icons/GroupAdd'
+import MoreVertIcon from '@material-ui/icons/MoreVert'
+import ListIcon from '@material-ui/icons/List'
 import DeleteIcon from '@material-ui/icons/Delete'
-import ListItem from '@material-ui/core/ListItem';
-import Typography from '@material-ui/core/Typography';
-import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
-import IconButton from '@material-ui/core/IconButton';
-import Menu from '@material-ui/core/Menu';
-import MenuItem from '@material-ui/core/MenuItem';
-import { deleteTeam } from '../redux/actions/teamActions';
-import { useHistory } from "react-router-dom";
+import ListItem from '@material-ui/core/ListItem'
+import Typography from '@material-ui/core/Typography'
+import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction'
+import IconButton from '@material-ui/core/IconButton'
+import Menu from '@material-ui/core/Menu'
+import MenuItem from '@material-ui/core/MenuItem'
+import { deleteTeam as deleteTeamAction } from '../redux/actions/teamActions'
+import { addToast as addToastAction } from '../redux/actions/toastActions'
+import { Toast } from './Snackbar'
+import { useHistory } from "react-router-dom"
 
-function Team({team, OnClickMyTeam, deleteTeam, selected}: {team: any, OnClickMyTeam: any, deleteTeam: any, selected: any}) {
+function Team({
+    team,
+    OnClickMyTeam,
+    deleteTeam,
+    selected,
+    toast,
+}: {
+    team: any,
+    OnClickMyTeam: Function,
+    deleteTeam: Function,
+    selected: any,
+    toast: Function,
+}) {
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
     const history = useHistory();
 
@@ -31,6 +45,7 @@ function Team({team, OnClickMyTeam, deleteTeam, selected}: {team: any, OnClickMy
 
     const handleInvite = () => {
         copy(team.id);
+        toast({message: `ID of ${team.name} is copied to buffer.`, severity: 'info'})
         setAnchorEl(null);
     }
 
@@ -39,18 +54,19 @@ function Team({team, OnClickMyTeam, deleteTeam, selected}: {team: any, OnClickMy
         history.push(`teammates/${team.id}`);
     }
 
-    const handleDelete = () => { 
+    const handleDelete = () => {
         deleteTeam(team.id);
+        toast({ message: `You are deleted from ${team.name}.`, severity: 'error' });
         setAnchorEl(null);
     };
 
     if (!team) return <ListItem><Typography>team loading...</Typography></ListItem>;
 
     return (
-        <ListItem 
-            id={team.id} 
-            button 
-            onClick={() => OnClickMyTeam(team.id)} 
+        <ListItem
+            id={team.id}
+            button
+            onClick={() => OnClickMyTeam(team.id)}
             key={team.id}
             selected={selected}
         >
@@ -82,7 +98,7 @@ function Team({team, OnClickMyTeam, deleteTeam, selected}: {team: any, OnClickMy
                         Show teammates
                         </MenuItem>
                     <MenuItem onClick={handleDelete}>
-                    <ListItemIcon>
+                        <ListItemIcon>
                             <DeleteIcon fontSize="small" />
                         </ListItemIcon>
                         Delete me from group
@@ -96,6 +112,7 @@ function Team({team, OnClickMyTeam, deleteTeam, selected}: {team: any, OnClickMy
 export default
     connect(null, (dispatch: any) => {
         return {
-            deleteTeam: (teamId: string) => dispatch(deleteTeam(teamId)),
+            deleteTeam: (teamId: string) => dispatch(deleteTeamAction(teamId)),
+            toast: (toast: Toast) => dispatch(addToastAction(toast)),
         }
     })(Team);

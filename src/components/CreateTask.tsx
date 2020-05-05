@@ -12,6 +12,8 @@ import TextField from '@material-ui/core/TextField';
 import FormHelperText from '@material-ui/core/FormHelperText';
 
 import { createTask as createTaskAction } from '../redux/actions/taskActions';
+import { addToast as addToastAction } from '../redux/actions/toastActions'
+import { Toast } from './Snackbar'
 
 
 
@@ -19,7 +21,7 @@ const useStyles = makeStyles((theme: Theme) =>
     createStyles({
         card: {
             width: 330,
-            maxHeight: 260,
+            maxHeight: 280,
             margin: theme.spacing(3),
         },
         media: {
@@ -46,7 +48,15 @@ const useStyles = makeStyles((theme: Theme) =>
     }),
 );
 
-export function CreateTask({ createTask, teamId }: { createTask: any, teamId: string }) {
+export function CreateTask({
+    createTask,
+    toast, 
+    teamId 
+}: { 
+    createTask: Function,
+    toast: Function,
+    teamId: string 
+}) {
     const [newTask, setNewTask] = useState({ taskName: '', description: '', userId: teamId });
     const [error, setError] = useState({ taskName: '', description: '', userId: '' });
 
@@ -65,9 +75,11 @@ export function CreateTask({ createTask, teamId }: { createTask: any, teamId: st
                 taskName: (!newTask.taskName) ? 'Enter name! ' : '',
                 description: (!newTask.description) ? 'Enter description! ' : '',
             });
+            toast({message: 'Can\'t create task.', severity: 'error'})
             return;
         }
         createTask(newTask);
+        toast({message: `Task ${newTask.taskName} created.`, severity: 'success'})
         setNewTask({ ...newTask,  taskName: '', description: '' });
     }
 
@@ -159,7 +171,8 @@ export function CreateTask({ createTask, teamId }: { createTask: any, teamId: st
 
 function mapActionsToProps(dispatch: any) {
     return {
-        createTask: (task: any) => dispatch(createTaskAction(task))
+        createTask: (task: any) => dispatch(createTaskAction(task)),
+        toast: (toast: Toast) => dispatch(addToastAction(toast)),
     }
 }
 

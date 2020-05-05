@@ -3,10 +3,13 @@ import {
     CREATE_TOAST_ERROR,
 } from '../types'
 
+import { Toast } from '../../components/Snackbar'
 
-export const createToast = (toast) => {
-    return (dispatch) => {
+
+export const addToast = (toast: Toast) => {
+    return (dispatch: any) => {
         try {
+            console.log('loled');
             dispatch({ type: CREATE_TOAST, toast });
         } catch (err) {
             console.log(err);

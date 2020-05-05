@@ -302,8 +302,6 @@ function MainBoard({ firebase, tasks, teams, userName, userId}: { firebase: any,
 
 export default compose(
     connect((store: any) => {
-        console.log('=========store============');
-        console.log(store);
         return {
             // if we have teams we merge user's task array with all teams' task arrays. Else we just return user's tasks array
             tasks: store.firestore.ordered.teams ?
@@ -335,13 +333,11 @@ export default compose(
     firestoreConnect(({ teams }: any) => {
         if (!teams) return [];
         let ids = teams.map((team: any) => team.id);
-        console.log(ids);
         let res = ids.map((id: any, index: number) => ({
             collection: 'tasks',
             where: ['userId', '==', id],
             storeAs: `tasks${id}`,
         }));
-        console.log(res);
         return res;
     }),
 )(MainBoard)
