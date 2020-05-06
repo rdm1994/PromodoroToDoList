@@ -8,6 +8,7 @@ import {
     SET_TASK_DONE,
     SET_TASK_DONE_ERROR,
 } from '../types'
+import { addToast } from './toastActions'
 
 export const createTask = (task) => {
     return (dispatch, getState, getFirestore) => {
@@ -22,8 +23,10 @@ export const createTask = (task) => {
             done: false,
         }).then(() => {
             dispatch({ type: CREATE_TASK, task });
+            dispatch(addToast({message: `Task ${task.taskName} created`, severity: 'success'}));
         }).catch((err) => {
             dispatch({ type: CREATE_TASK_ERROR }, err);
+            dispatch(addToast({message: `Can't create task`, severity: 'error'}));
         });
     }
 }
@@ -34,8 +37,10 @@ export const deleteTask = (taskId) => {
         firestore.collection('tasks').doc(taskId).delete()
             .then(() => {
                 dispatch({ type: DELETE_TASK, taskId });
+                dispatch(addToast({message: `Task deleted`, severity: 'success'}));
             }).catch(err => {
                 dispatch({ type: DELETE_TASK_ERROR, err });
+                dispatch(addToast({message: `Can't delete task`, severity: 'error'}));
             });
     }
 }

@@ -6,6 +6,7 @@ import {
     ADD_TEAM,
     ADD_TEAM_ERROR,
 } from '../types'
+import { addToast } from './toastActions'
 import * as firebase from 'firebase'
 
 export const deleteTeam = (teamId) => {
@@ -16,8 +17,10 @@ export const deleteTeam = (teamId) => {
         })
             .then(() => {
                 dispatch({ type: DELETE_TEAM, teamId });
+                dispatch(addToast({message: `You're deleted from team`, severity: 'success'}));
             }).catch(err => {
                 dispatch({ type: DELETE_TEAM_ERROR, err });
+                dispatch(addToast({message: `Can't delete you from team`, severity: 'error'}));
             });
     }
 }
@@ -30,9 +33,10 @@ export const createTeam = (team) => {
             users: [getState().firebase.auth.uid],
         }).then(() => {
             dispatch({ type: CREATE_TEAM, team });
+            dispatch(addToast({message: `Team ${team.name} is created`, severity: 'success'}));
         }).catch((err) => {
-            console.log(err);
             dispatch({ type: CREATE_TEAM_ERROR }, err);
+            dispatch(addToast({message: `Can't delete team ${team.name}`, severity: 'error'}));
         });
     }
 }
@@ -50,9 +54,11 @@ export const addTeam = (teamId) => {
         })
         .then(() => {         
             dispatch({ type: ADD_TEAM, teamId });
+            dispatch(addToast({message: `You're added to team`, severity: 'success'}));
         })
         .catch(err => {
-            dispatch({ type: ADD_TEAM_ERROR, err })
+            dispatch({ type: ADD_TEAM_ERROR, err });
+            dispatch(addToast({message: `Can't add you to team`, severity: 'error'}));
         });
     }
 }

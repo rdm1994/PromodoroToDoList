@@ -7,8 +7,7 @@ import TextField from '@material-ui/core/TextField'
 import Team from './Team'
 import { createTeam as createTeamAction } from '../redux/actions/teamActions'
 import { addTeam as addTeamAction } from '../redux/actions/teamActions'
-import { addToast as addToastAction } from '../redux/actions/toastActions'
-import { Toast } from './Snackbar'
+
 
 function TeamList(
     {
@@ -16,13 +15,11 @@ function TeamList(
         teamList,
         createTeam,
         addTeam,
-        toast
     }: {
         OnClickMyTeam: any,
         teamList: any,
         createTeam: Function,
         addTeam: Function,
-        toast: Function,
     }) {
     const [team, setTeam] = useState({ name: '' });
     const [teamId, setTeamId] = useState('');
@@ -45,7 +42,6 @@ function TeamList(
     const handleCreateTeam = (e: any) => {
         e.preventDefault();
         createTeam(team);
-        toast({ message: `Team ${team.name} created!`, severity: 'success' });
         setTeam({ name: '' });
     }
     const handleChange = (e: any) => {
@@ -60,7 +56,6 @@ function TeamList(
         e.preventDefault();
         addTeam(teamId);
         setTeamId('');
-        toast({ message: `Team added!`, severity: 'success' });
     }
 
     return (
@@ -102,7 +97,6 @@ const mapActionsToProps = (dispatch: any) => {
     return {
         createTeam: (team: any) => dispatch(createTeamAction(team)),
         addTeam: (teamId: String) => dispatch(addTeamAction(teamId)),
-        toast: (toast: Toast) => dispatch(addToastAction(toast)),
     }
 }
 

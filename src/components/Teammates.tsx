@@ -80,8 +80,6 @@ export const Teammates = ({ teams, users, history }: {teams: any, users: any, hi
 
 export default compose(
     connect((store: any) => {
-        console.log('=========store============');
-        console.log(store);
         return {
             teams: store.firestore.ordered.teams,
             users: store.firestore.ordered.teams &&

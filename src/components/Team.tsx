@@ -56,7 +56,6 @@ function Team({
 
     const handleDelete = () => {
         deleteTeam(team.id);
-        toast({ message: `You are deleted from ${team.name}.`, severity: 'error' });
         setAnchorEl(null);
     };
 
@@ -101,7 +100,7 @@ function Team({
                         <ListItemIcon>
                             <DeleteIcon fontSize="small" />
                         </ListItemIcon>
-                        Delete me from group
+                        Delete me from team
                     </MenuItem>
                 </Menu>
             </ListItemSecondaryAction>

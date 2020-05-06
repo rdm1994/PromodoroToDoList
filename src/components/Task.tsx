@@ -21,8 +21,6 @@ import { red } from '@material-ui/core/colors'
 import PopperJs from 'popper.js'
 import { firestore } from 'firebase';
 import { deleteTask, setTaskTotalTime, setTaskDone } from '../redux/actions/taskActions'
-import { addToast as addToastAction } from '../redux/actions/toastActions'
-import { Toast } from './Snackbar'
 
 const useStyles = makeStyles(theme =>
     createStyles({
@@ -61,7 +59,6 @@ function Task({
     setTotalTime,
     setTaskDone,
     taskId,
-    toast
 }: {
     task: TaskType,
     userName: string,
@@ -70,7 +67,6 @@ function Task({
     setTotalTime: Function,
     setTaskDone: Function,
     taskId: string,
-    toast: Function
 }) {
     const [offset, setOffset] = useState(0);
     const [minutes, setMinutes] = useState(0);
@@ -112,7 +108,6 @@ function Task({
     }
 
     function stopTimer() {
-        console.log(timeInterval);
         clearInterval(timeInterval);
         setTimeInterval(null);
     }
@@ -126,10 +121,6 @@ function Task({
     }
 
     function handleDelete() {
-        console.log('wtf');
-        console.log(toast);
-        toast({message: `Task + ${task.taskName} deleted.`, severity: 'success'});
-        console.log('and so?');
         deleteTask(taskId);
         setAnchorEl(null);
     }
@@ -309,7 +300,6 @@ export default
                 dispatch(setTaskTotalTime(taskId, timeToAdd)),
             setTaskDone: (taskId: string, done: boolean) => 
                 dispatch(setTaskDone(taskId, done)),
-            toast: (toast: Toast) => dispatch(addToastAction(toast)),
         }
     })(Task);
 
