@@ -79,7 +79,6 @@ export function CreateTask({
             return;
         }
         createTask(newTask);
-        toast({message: `Task ${newTask.taskName} created.`, severity: 'success'})
         setNewTask({ ...newTask,  taskName: '', description: '' });
     }
 
