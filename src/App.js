@@ -1,7 +1,7 @@
 import React from 'react'
 // Components
 import Navbar from './components/Navbar'
-import MainRouter from './components/MainRouter'
+import MainRouter from './components/router/MainRouter'
 import Snackbar from './components/Snackbar'
 // Redux
 import { Provider } from 'react-redux'

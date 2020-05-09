@@ -17,8 +17,8 @@ export const DELETE_TEAM_ERROR = 'DELETE_TEAM_ERROR';
 export const ADD_TEAM = 'ADD_TEAM';
 export const ADD_TEAM_ERROR = 'ADD_TEAM_ERROR';
 
-export const CREATE_TOAST = 'CREATE_TOAST';
-export const CREATE_TOAST_ERROR = 'CREATE_TOAST_ERROR';
+export const ADD_TOAST = 'ADD_TOAST';
+export const ADD_TOAST_ERROR = 'ADD_TOAST_ERROR';
 
 
 export const SET_USER = 'SET_USER';

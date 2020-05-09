@@ -1,6 +1,6 @@
 import {
-    CREATE_TOAST,
-    CREATE_TOAST_ERROR,
+    ADD_TOAST,
+    ADD_TOAST_ERROR,
 } from '../types'
 
 const initialState = {
@@ -9,17 +9,16 @@ const initialState = {
 
 export default function toastReducer(state = initialState, action: any) {
     switch (action.type) {
-        case CREATE_TOAST:
-            console.log(action);
+        case ADD_TOAST:
             return {
                 ...state,
                 toasts: [...state.toasts, action.toast],
-                createToastError: null,
+                addToastError: null,
             };
-        case CREATE_TOAST_ERROR:
+        case ADD_TOAST_ERROR:
             return {
                 ...state,
-                createToastError: action.err,
+                addToastError: action.err,
             };
         default:
             return { ...state }

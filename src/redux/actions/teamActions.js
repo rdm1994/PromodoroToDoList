@@ -6,6 +6,7 @@ import {
     ADD_TEAM,
     ADD_TEAM_ERROR,
 } from '../types'
+import { addToast } from './toastActions';
 import * as firebase from 'firebase'
 
 export const deleteTeam = (teamId) => {
@@ -30,9 +31,11 @@ export const createTeam = (team) => {
             users: [getState().firebase.auth.uid],
         }).then(() => {
             dispatch({ type: CREATE_TEAM, team });
+            dispatch(addToast({message: `Team ${team.name} created.`, severity: 'success'}));
         }).catch((err) => {
             console.log(err);
             dispatch({ type: CREATE_TEAM_ERROR }, err);
+            dispatch(addToast({message: `Can't create team`, severity: 'success'}));
         });
     }
 }
@@ -50,9 +53,12 @@ export const addTeam = (teamId) => {
         })
         .then(() => {         
             dispatch({ type: ADD_TEAM, teamId });
+            dispatch(addToast({message: 'Team added.', severity: 'success'}));
         })
         .catch(err => {
-            dispatch({ type: ADD_TEAM_ERROR, err })
+            dispatch({ type: ADD_TEAM_ERROR, err });
+            console.log(err.message);
+            dispatch(addToast({message: `Where is no such team!`, severity: 'error'}));
         });
     }
 }
