@@ -5,8 +5,8 @@ import Task, { TaskType } from './Task'
 import CreateTask from './CreateTask';
 import TeamList from './TeamList';
 //Firebase
-import { compose } from 'redux';
 import { firestoreConnect } from 'react-redux-firebase'
+import { compose } from 'redux';
 import { flatten } from 'lodash'
 //MUI
 import clsx from 'clsx'
@@ -29,8 +29,6 @@ import InboxIcon from '@material-ui/icons/MoveToInbox'
 import UserIcon from '@material-ui/icons/AccountCircle'
 import Menu from '@material-ui/core/Menu'
 import MenuItem from '@material-ui/core/MenuItem'
-
-
 
 const drawerWidth = 240;
 
@@ -101,7 +99,7 @@ const useStyles = makeStyles((theme: Theme) =>
     }),
 );
 
-function MainBoard({ firebase, tasks, teams, userName, userId}: { firebase: any, tasks: any, teams: any, userName: string, userId: string}) {
+function MainBoard({ firebase, tasks, teams, userName }: { firebase: any, tasks: any, teams: any, userName: string }) {
     const [dateFilter, setDateFilter] = useState<any>(null);
     const [teamFilter, setTeamFilter] = useState<string>('');
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -302,6 +300,9 @@ function MainBoard({ firebase, tasks, teams, userName, userId}: { firebase: any,
 
 export default compose(
     connect((store: any) => {
+        if (!store.firestore.ordered.tasks) return {
+            userId: store.firebase.auth.uid,
+        };
         return {
             // if we have teams we merge user's task array with all teams' task arrays. Else we just return user's tasks array
             tasks: store.firestore.ordered.teams ?

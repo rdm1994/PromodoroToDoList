@@ -3,7 +3,7 @@ import { Redirect } from 'react-router-dom'
 import { connect } from 'react-redux'
 import Page from './Page';
 
-function PrivateRoute({component: Component, isLoggedIn, ...rest}) {   
+function PrivateRoute({component: Component, isLoggedIn, ...rest}) {
     return (
         <Page 
             {...rest}

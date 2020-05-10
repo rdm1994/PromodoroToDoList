@@ -49,7 +49,6 @@ function Login({ firebase, auth, history }) {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
-    console.log(auth);
     if(auth.uid) history.push('/');
     function loginWithGoogle() {
         firebase.login({ provider: 'google', type: 'popup' }).then(() => {
@@ -66,12 +65,11 @@ function Login({ firebase, auth, history }) {
                 password
             }).then(() => {
                 console.log('go main');
-                history.push('/');
+                history.push('/login');
             })
             return;
         }
         isEmpty(auth) ? loginWithGoogle() : firebase.logout()
-        console.log('ok!')
     }
     function handleChange(e) {
         switch (e.target.name) {

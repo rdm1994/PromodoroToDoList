@@ -1,4 +1,5 @@
 import React from 'react'
+import { BrowserRouter as Router } from 'react-router-dom'
 // Components
 import Navbar from './components/Navbar'
 import MainRouter from './components/router/MainRouter'
@@ -15,7 +16,7 @@ import './App.css';
 
 const rrfProps = {
   firebase,
-  config: { 
+  config: {
     userProfile: 'users',
     useFirestoreForProfile: true,
   },
@@ -26,11 +27,13 @@ const rrfProps = {
 function App() {
   return (
     <Provider store={store}>
-      <ReactReduxFirebaseProvider {...rrfProps}>
-        <Navbar />
-        <MainRouter />
-        <Snackbar />
-      </ReactReduxFirebaseProvider>
+      <Router>
+        <ReactReduxFirebaseProvider {...rrfProps}>
+          <Navbar />
+          <MainRouter />
+          <Snackbar />
+        </ReactReduxFirebaseProvider>
+      </Router>
     </Provider>
   );
 }
