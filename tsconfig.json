@@ -20,6 +20,6 @@
     "jsx": "preserve"
   },
   "include": [
-    "src"
+    "src", "src/test/components/CreateTask.test.js", "test/components/SignUp.test.js", "test/components/App.test.js"
   ]
 }
