@@ -11,13 +11,17 @@ import TextField from '@material-ui/core/TextField'
 
 describe('<CreateTask> componenet', () => {
     let component;
-    let createTask = jest.fn();
+    let props;
     const setState = jest.fn();
     const useStateSpy = jest.spyOn(React, 'useState')
     useStateSpy.mockImplementation((init) => [init, setState]);
     beforeEach(() => {
         let shallow = createShallow();
-        component = shallow(<CreateTask createTask={createTask} />);
+        props = {
+            createTask: jest.fn(),
+            toast: jest.fn()
+        }
+        component = shallow(<CreateTask {...props}/>);
     });
 
     describe('render all elemets', () => {
@@ -42,30 +46,48 @@ describe('<CreateTask> componenet', () => {
     })
 
     it('Create Button should trigger createTask ', () => {
-        component.find(Button).at(0).simulate("click", {
+        component.find(TextField).at(0).simulate('change', {
+            target: {
+                name: 'taskName',
+                value: 'Test'
+            },
+            preventDefault: () => {
+            },
+        });
+        component.find(TextField).at(1).simulate('change', {
+            target: {
+                name: 'description',
+                value: 'Test'
+            },
+            preventDefault: () => {
+            },
+        });
+        component.find(Button).at(0).simulate('click', {
             preventDefault: () => {
             }
         });
-        expect(setState).toBeCalled();
+        expect(props.createTask).toBeCalled();
     });
-    it('OnChange name input triggers setState', () => {
+    it('OnChange name input changes value properly', () => {
         component.find(TextField).at(0).simulate('change', {
             target: {
+                name: 'taskName',
                 value: 'Test',
             },
             preventDefault: () => {
             },
         });
-        expect(setState).toBeCalledTimes(1);
+        expect(component.find(TextField).at(0).props().value).toBe('Test');
     });
-    it('OnChange description input triggers setState', () => {
+    it('OnChange description input changes value properly', () => {
         component.find(TextField).at(1).simulate('change', {
             target: {
+                name: 'description',
                 value: 'Test',
             },
             preventDefault: () => {
             },
         });
-        expect(setState).toBeCalledTimes(1);
+        expect(component.find(TextField).at(1).props().value).toBe('Test');
     });
 });

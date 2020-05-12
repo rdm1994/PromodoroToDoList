@@ -8,7 +8,7 @@ import Team from './Team'
 import { createTeam as createTeamAction } from '../redux/actions/teamActions'
 import { addTeam as addTeamAction } from '../redux/actions/teamActions'
 
-function TeamList(
+export function TeamList(
     {
         OnClickMyTeam,
         teamList,
@@ -24,20 +24,18 @@ function TeamList(
     const [teamId, setTeamId] = useState('');
     const [selectedTeam, setSelectedTeam] = useState('');
 
-    if (!teamList) return (
-        <ListItem>
-            <Typography>team list loading</Typography>
-        </ListItem>);
-
     const handleClickMyTeam = (teamId: string) => {
         (teamId === selectedTeam) ? setSelectedTeam('') : setSelectedTeam(teamId)
         OnClickMyTeam(teamId);
     }
-    let list = teamList.map((team: any) => {
-        return (
-            <Team team={team} OnClickMyTeam={handleClickMyTeam} selected={selectedTeam === team.id} key={team.id} />
-        )
-    })
+    let list;
+    if (teamList) {
+        list = teamList.map((team: any) => {
+            return (
+                <Team team={team} OnClickMyTeam={handleClickMyTeam} selected={selectedTeam === team.id} key={team.id} />
+            )
+        });
+    }
     const handleCreateTeam = (e: any) => {
         e.preventDefault();
         createTeam(team);
@@ -59,7 +57,13 @@ function TeamList(
 
     return (
         <>
-            {list}
+            {
+                (!teamList) ? (
+                    <ListItem>
+                        <Typography>team list loading</Typography>
+                    </ListItem>
+                ) : list
+            }
             <ListItem>
                 <TextField
                     id="createteam"

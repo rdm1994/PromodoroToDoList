@@ -152,7 +152,7 @@ export function CreateTask({
                     align='center'
                     color='primary'
                 >
-                    { teamId && 'Task wil be created in selected group' }
+                    { teamId && 'Task will be created in selected group' }
                 </Typography>
 
             </CardContent>
