@@ -2,6 +2,7 @@ import React from 'react'
 import { TeamList } from '../../components/TeamList'
 import { createShallow } from '@material-ui/core/test-utils'
 
+import Team from '../../components/Team'
 import ListItem from '@material-ui/core/ListItem'
 import Button from '@material-ui/core/Button'
 import TextField from '@material-ui/core/TextField'
@@ -26,14 +27,20 @@ describe('<TeamList> component', () => {
         it('Render DUMB component without error', () => {
             expect(component.length).toBe(1);
         });
-        it('Contains 2 <ListItem/>', () => {
+        it('contains 2 <ListItem/>', () => {
             expect(component.find(ListItem).length).toBe(2);
         });
-        it('Contains 2 <TextFild/>', () => {
+        it('contains 2 <TextFild/>', () => {
             expect(component.find(TextField).length).toBe(2);
         });
-        it('Contains 2 <Button />', () => {
+        it('contains 2 <Button />', () => {
             expect(component.find(Button).length).toBe(2);
+        });
+        it('renders list of teams', () => {
+            let shallow = createShallow();
+            let teamList = [{ id: '1', name: 'team1' }, { id: '2', name: 'team2'}]
+            component = shallow(<TeamList {...props} teamList={teamList} />);
+            expect(component.find(Team).length).toBe(2);
         });
     })
 
@@ -63,7 +70,7 @@ describe('<TeamList> component', () => {
         });
         expect(component.find(TextField).at(0).props().value).toBe('Test');
     });
-    
+
     it('OnChange ID input changes value properly', () => {
         component.find(TextField).at(1).simulate('change', {
             target: {

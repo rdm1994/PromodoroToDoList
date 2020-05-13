@@ -19,7 +19,7 @@ import { addToast as addToastAction } from '../redux/actions/toastActions'
 import { Toast } from './Snackbar'
 import { useHistory } from "react-router-dom"
 
-function Team({
+export function Team({
     team,
     OnClickMyTeam,
     deleteTeam,
@@ -29,7 +29,7 @@ function Team({
     team: any,
     OnClickMyTeam: Function,
     deleteTeam: Function,
-    selected: any,
+    selected: boolean,
     toast: Function,
 }) {
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -89,13 +89,13 @@ function Team({
                             <GroupAddIcon fontSize="small" />
                         </ListItemIcon>
                         Invite to team
-                        </MenuItem>
+                    </MenuItem>
                     <MenuItem onClick={handleTeammates}>
                         <ListItemIcon>
                             <ListIcon fontSize="small" />
                         </ListItemIcon>
                         Show teammates
-                        </MenuItem>
+                    </MenuItem>
                     <MenuItem onClick={handleDelete}>
                         <ListItemIcon>
                             <DeleteIcon fontSize="small" />
