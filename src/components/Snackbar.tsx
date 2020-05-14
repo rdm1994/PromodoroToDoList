@@ -4,7 +4,7 @@ import MuiAlert, { AlertProps, Color } from '@material-ui/lab/Alert'
 import { makeStyles, Theme } from '@material-ui/core/styles'
 import { connect } from 'react-redux'
 
-function Alert(props: AlertProps) {
+export function Alert(props: AlertProps) {
     return <MuiAlert elevation={6} variant="filled" {...props} />;
 }
 
@@ -18,14 +18,14 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
 }));
 
-function CustomSnackbar({ toasts }: any) {
+export function CustomSnackbar({ toasts }: { toasts: Toast[] }) {
     const classes = useStyles({});
     const [open, setOpen] = React.useState(false);
     const [toast, setToast] = React.useState<Toast>({ message: '', severity: 'success'});
 
     React.useEffect(() => {
         if(toasts && toasts.length > 0) {
-            setToast([...toasts].pop());
+            setToast(toasts[toasts.length - 1]);
             setOpen(true);
         }
     }, [toasts])

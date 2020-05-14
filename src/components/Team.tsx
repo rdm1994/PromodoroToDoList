@@ -59,7 +59,7 @@ export function Team({
         setAnchorEl(null);
     };
 
-    if (!team) return <ListItem><Typography>team loading...</Typography></ListItem>;
+    if (!team) return <ListItem><Typography>team is loading...</Typography></ListItem>;
 
     return (
         <ListItem

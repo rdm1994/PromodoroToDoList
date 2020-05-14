@@ -10,6 +10,7 @@ import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction'
 import IconButton from '@material-ui/core/IconButton'
 import Menu from '@material-ui/core/Menu'
 import MenuItem from '@material-ui/core/MenuItem'
+import Typography from '@material-ui/core/Typography'
 
 jest.mock('copy-to-clipboard');
 // eslint-disable-next-line import/first
@@ -18,7 +19,11 @@ import copy from 'copy-to-clipboard';
 describe('<Team> component', () => {
     let component;
     let props;
-    const historyMock = { push: jest.fn(), location: {}, listen: jest.fn() };
+    const historyMock = { 
+        push: jest.fn(), 
+        location: {}, 
+        listen: jest.fn()
+    };
 
     beforeEach(() => {
         copy.mockReturnValue('s');
@@ -65,28 +70,49 @@ describe('<Team> component', () => {
         });
     })
 
-    it('calls copy and toast function on handleInvite', () => {
-        component.find(MenuItem).at(0).simulate('click', {
-            preventDefault: () => {
-            }
+    describe('renders properly without props', () => {
+        beforeEach(() => {
+            component = mount(
+                <Router history={historyMock}>
+                    <Team {...props} team={undefined}/>
+                </Router>
+            );
         });
-        expect(props.toast).toBeCalled();
-        expect(copy).toBeCalled();
-    });
+        it('contains 1 <ListItem>', () => {
+            expect(component.find(ListItem).length).toBe(1);
+        });
+        it('contains 1 <Typography/>', () => {
+            expect(component.find(Typography).length).toBe(1);
+        });
+        it('shows proper text in Typography', () => {
+            expect(component.find(Typography).text()).toBe('team is loading...');
+        })
+    })
 
-    it('calls history on handleTeammates', () => {
-        component.find(MenuItem).at(1).simulate('click', {
-            preventDefault: () => {
-            }
+    describe('all butttons work', () => {
+        it('calls copy and toast function on handleInvite', () => {
+            component.find(MenuItem).at(0).simulate('click', {
+                preventDefault: () => {
+                }
+            });
+            expect(props.toast).toBeCalled();
+            expect(copy).toBeCalled();
         });
-        expect(historyMock.push).toBeCalled();;
-    });
+        it('calls history on handleTeammates', () => {
+            component.find(MenuItem).at(1).simulate('click', {
+                preventDefault: () => {
+                }
+            });
+            expect(historyMock.push).toHaveBeenCalledWith(`teammates/${props.team.id}`);
+        });
+        it('callse deleteTeam on handleDelete', () => {
+            component.find(MenuItem).at(2).simulate('click', {
+                preventDefault: () => {
+                },
+            });
+            expect(props.deleteTeam).toBeCalled();
+        });
+    })
 
-    it('callse deleteTeam on handleDelete', () => {
-        component.find(MenuItem).at(2).simulate('click', {
-            preventDefault: () => {
-            },
-        });
-        expect(props.deleteTeam).toBeCalled();
-    });
+
 })
