@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { makeStyles, createStyles } from '@material-ui/core/styles'
 import { connect } from 'react-redux'
+import ValueLabelComponent from './ValueLabel'
 
 import Card from '@material-ui/core/Card'
 import CardHeader from '@material-ui/core/CardHeader'
@@ -13,12 +14,11 @@ import Avatar from '@material-ui/core/Avatar'
 import IconButton from '@material-ui/core/IconButton'
 import MoreVertIcon from '@material-ui/icons/MoreVert'
 import Slider from '@material-ui/core/Slider'
-import Tooltip from '@material-ui/core/Tooltip'
 import Menu from '@material-ui/core/Menu'
 import MenuItem from '@material-ui/core/MenuItem'
 import { red } from '@material-ui/core/colors'
 
-import PopperJs from 'popper.js'
+
 import { firestore } from 'firebase';
 import { deleteTask, setTaskTotalTime, setTaskDone } from '../redux/actions/taskActions'
 
@@ -51,7 +51,7 @@ const formatDate = (timeStamp: firestore.Timestamp) => {
     return days + '.' + months + '.' + date.getFullYear();
 }
 
-function Task({
+export function Task({
     task,
     userName,
     userPhoto,
@@ -74,7 +74,7 @@ function Task({
     const [timeInterval, setTimeInterval] = useState<any>();
     const [duration, setDuration] = useState(20);
     //MIU declarations
-    const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+    const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const classes = useStyles({});
     const open = Boolean(anchorEl);
     const radius = 86;
@@ -138,31 +138,6 @@ function Task({
     //MUI function
     function handleMenuOnClose() {
         setAnchorEl(null);
-    }
-
-    function ValueLabelComponent(props: any) {
-        const { children, open, value } = props;
-
-        const popperRef = React.useRef<PopperJs | null>(null);
-        React.useEffect(() => {
-            if (popperRef.current) {
-                popperRef.current.update();
-            }
-        });
-
-        return (
-            <Tooltip
-                PopperProps={{
-                    popperRef,
-                }}
-                open={open}
-                enterTouchDelay={0}
-                placement="top"
-                title={value}
-            >
-                {children}
-            </Tooltip>
-        );
     }
 
     function handleMenuOnClick(event: React.MouseEvent<HTMLElement>) {
