@@ -1,7 +1,8 @@
 //React
 import React, { useState } from 'react'
 import { connect } from 'react-redux'
-import Task, { TaskType } from './Task'
+import { TaskType } from './Task'
+
 import CreateTask from './CreateTask';
 import TeamList from './TeamList';
 //Firebase
@@ -29,6 +30,8 @@ import InboxIcon from '@material-ui/icons/MoveToInbox'
 import UserIcon from '@material-ui/icons/AccountCircle'
 import Menu from '@material-ui/core/Menu'
 import MenuItem from '@material-ui/core/MenuItem'
+
+const Task = React.lazy(() => import('./Task'));
 
 const drawerWidth = 240;
 
@@ -99,7 +102,14 @@ const useStyles = makeStyles((theme: Theme) =>
     }),
 );
 
-function MainBoard({ firebase, tasks, teams, userName }: { firebase: any, tasks: any, teams: any, userName: string }) {
+interface MyPropsType {
+    firebase: any, 
+    tasks: any, 
+    teams: any, 
+    userName: string,
+}
+
+function MainBoard({ firebase, tasks, teams, userName }: MyPropsType) {
     const [dateFilter, setDateFilter] = useState<any>(null);
     const [teamFilter, setTeamFilter] = useState<string>('');
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -174,6 +184,25 @@ function MainBoard({ firebase, tasks, teams, userName }: { firebase: any, tasks:
         }
         return false;
     }
+
+    function taskRender() {
+        return (tasks) ? tasks.filter(filterTasks).sort((a: TaskType, b: TaskType) => {
+            return b.timestamp.toDate().getTime() - a.timestamp.toDate().getTime();
+        }).map((task: any, index: number) => (
+            <React.Suspense fallback={
+                (
+                    <Typography key={index} paragraph>Loading...</Typography>
+                )
+            }>
+                <Task taskId={task.id} key={task.id} task={task} />
+            </React.Suspense>
+        )) : (
+                <Typography paragraph>Loading...</Typography>
+            )
+    }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    const taskRenderMemo = React.useMemo(() => taskRender(), [tasks]);
 
     return (
         <div className={classes.root}>
@@ -285,13 +314,7 @@ function MainBoard({ firebase, tasks, teams, userName }: { firebase: any, tasks:
                 <CreateTask teamId={teamFilter} />
                 <div className={classes.drawerHeader} />
                 {
-                    (tasks) ? tasks.filter(filterTasks).sort((a: TaskType, b: TaskType) => {
-                        return b.timestamp.toDate().getTime() - a.timestamp.toDate().getTime();
-                    }).map((task: any, index: number) => (
-                        <Task taskId={task.id} key={task.id} task={task} />
-                    )) : (
-                            <Typography paragraph>Loading...</Typography>
-                        )
+                    taskRenderMemo
                 }
             </main>
         </div>
@@ -341,4 +364,4 @@ export default compose(
         }));
         return res;
     }),
-)(MainBoard)
+)(React.memo(MainBoard))

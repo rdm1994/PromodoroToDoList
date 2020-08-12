@@ -103,4 +103,4 @@ const mapActionsToProps = (dispatch: any) => {
     }
 }
 
-export default connect(null, mapActionsToProps)(TeamList);
+export default connect(null, mapActionsToProps)(React.memo(TeamList));

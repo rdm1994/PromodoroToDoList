@@ -276,7 +276,7 @@ export default
             setTaskDone: (taskId: string, done: boolean) => 
                 dispatch(setTaskDone(taskId, done)),
         }
-    })(Task);
+    })(React.memo(Task));
 
 export interface TaskType {
     taskName: string,

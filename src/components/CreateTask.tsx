@@ -15,8 +15,6 @@ import { createTask as createTaskAction } from '../redux/actions/taskActions';
 import { addToast as addToastAction } from '../redux/actions/toastActions'
 import { Toast } from './Snackbar'
 
-
-
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
         card: {
@@ -61,7 +59,9 @@ export function CreateTask({
     const [error, setError] = useState({ taskName: '', description: '', userId: '' });
 
     useEffect(() => {
-        setNewTask({ ...newTask, userId: teamId })
+        setNewTask(newTask => {
+            return { ...newTask, userId: teamId }
+        })
     }, [teamId]);
 
     const classes = useStyles({});

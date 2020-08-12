@@ -114,4 +114,4 @@ export default
             deleteTeam: (teamId: string) => dispatch(deleteTeamAction(teamId)),
             toast: (toast: Toast) => dispatch(addToastAction(toast)),
         }
-    })(Team);
+    })(React.memo(Team));

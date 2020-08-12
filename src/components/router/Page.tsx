@@ -1,5 +1,5 @@
-import React, { FunctionComponent, useEffect } from 'react';
-import { Route, RouteProps } from 'react-router-dom';
+import React, { FunctionComponent, useEffect } from 'react'
+import { Route, RouteProps } from 'react-router-dom'
 
 interface IPageProps extends RouteProps {
     title: string;
@@ -7,7 +7,7 @@ interface IPageProps extends RouteProps {
 
 const Page: FunctionComponent<IPageProps> = props => {
     useEffect(() => {
-        document.title = "Website name | " + props.title;
+        document.title = "TeamTomato | " + props.title;
     });
 
     const { title, ...rest } = props;
