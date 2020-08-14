@@ -9,8 +9,30 @@ import SignUp from '../SignUp'
 import Teammates from '../Teammates'
 import Page404 from '../Page404'
 
+import { makeStyles } from '@material-ui/core/styles'
+import CircularProgress from '@material-ui/core/CircularProgress'
+
+const useStyles = makeStyles((theme) => ({
+    root: {
+        display: 'flex',
+        marginTop: 50,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+}));
+
+
 function MainRouter(props) {
-    if (!props.auth.isLoaded) return (<div>loading...</div>)
+    const classes = useStyles();
+
+    if (!props.auth.isLoaded) {
+        return (
+            <div className={classes.root}>
+                <CircularProgress />
+            </div>
+        )
+    }
+
     return (
         <Switch>
             <PrivateRoute path="/" exact component={MainBoard} title='Main' />

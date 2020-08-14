@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 import { TaskType } from './Task'
 
 import CreateTask from './CreateTask';
-import TeamList from './TeamList';
+
 //Firebase
 import { firestoreConnect } from 'react-redux-firebase'
 import { compose } from 'redux';
@@ -30,7 +30,10 @@ import InboxIcon from '@material-ui/icons/MoveToInbox'
 import UserIcon from '@material-ui/icons/AccountCircle'
 import Menu from '@material-ui/core/Menu'
 import MenuItem from '@material-ui/core/MenuItem'
+import CircularProgress from '@material-ui/core/CircularProgress'
+import { Card } from '@material-ui/core';
 
+const TeamList = React.lazy(() => import('./TeamList'));
 const Task = React.lazy(() => import('./Task'));
 
 const drawerWidth = 240;
@@ -97,7 +100,15 @@ const useStyles = makeStyles((theme: Theme) =>
         },
         card: {
             maxWidth: 345,
+            minWidth: 330,
+            minHeight: 457,
             margin: theme.spacing(3),
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+        },
+        progress: {
+            padding: 50,
         },
     }),
 );
@@ -189,15 +200,19 @@ function MainBoard({ firebase, tasks, teams, userName }: MyPropsType) {
         return (tasks) ? tasks.filter(filterTasks).sort((a: TaskType, b: TaskType) => {
             return b.timestamp.toDate().getTime() - a.timestamp.toDate().getTime();
         }).map((task: any, index: number) => (
-            <React.Suspense fallback={
+            <React.Suspense key={index} fallback={
                 (
-                    <Typography key={index} paragraph>Loading...</Typography>
+                    <Card className={classes.card}>
+                        <CircularProgress />
+                    </Card>
                 )
             }>
                 <Task taskId={task.id} key={task.id} task={task} />
             </React.Suspense>
         )) : (
-                <Typography paragraph>Loading...</Typography>
+                <div className={classes.progress}>
+                    <CircularProgress />
+                </div>
             )
     }
 
@@ -303,7 +318,11 @@ function MainBoard({ firebase, tasks, teams, userName }: MyPropsType) {
                     >
                         TEAMS
                         </Typography>
-                    <TeamList OnClickMyTeam={handleOnCLickMyTeam} teamList={teams} />
+                    <React.Suspense fallback={(
+                        <CircularProgress className={classes.progress}/>
+                    )}>
+                        <TeamList OnClickMyTeam={handleOnCLickMyTeam} teamList={teams} />
+                    </React.Suspense>
                 </List>
             </Drawer>
             <main

@@ -2,11 +2,11 @@ import React, { useState } from 'react'
 import { connect } from 'react-redux'
 import ListItem from '@material-ui/core/ListItem'
 import Button from '@material-ui/core/Button'
-import Typography from '@material-ui/core/Typography'
 import TextField from '@material-ui/core/TextField'
 import Team from './Team'
 import { createTeam as createTeamAction } from '../redux/actions/teamActions'
 import { addTeam as addTeamAction } from '../redux/actions/teamActions'
+import CircularProgress from '@material-ui/core/CircularProgress'
 
 export function TeamList(
     {
@@ -60,7 +60,7 @@ export function TeamList(
             {
                 (!teamList) ? (
                     <ListItem>
-                        <Typography>team list loading</Typography>
+                        <CircularProgress />
                     </ListItem>
                 ) : list
             }
