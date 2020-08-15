@@ -217,7 +217,7 @@ function MainBoard({ firebase, tasks, teams, userName }: MyPropsType) {
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    const taskRenderMemo = React.useMemo(() => taskRender(), [tasks]);
+    const taskRenderMemo = React.useMemo(() => taskRender(), [tasks, teamFilter, dateFilter]);
 
     return (
         <div className={classes.root}>
